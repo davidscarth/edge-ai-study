@@ -2,10 +2,10 @@
 A feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
 
 # Hardware
-* Raspberry Pi 5 (16GB) ($129, on sale for $99)
-* Raspberry Pi SSD Kit (Official, 512GB) ($59)
-* Raspberry Pi 27W Power Supply ($12), Active Cooler ($10), and Bumper ($4) 
-All-in, the costs are just under $200 (as purchased in person at Micro Center)
+The following build with a budget of approximately $200, purchased in-person at Micro Center:
+* [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) (16GB) (MSRP $129, found on sale for $99)
+* [Raspberry Pi SSD Kit](https://www.raspberrypi.com/products/ssd-kit/) (Official, 512GB) ($59)
+* [Raspberry Pi 45W Power Supply](https://www.microcenter.com/product/692335/raspberry-pi-45w-usb-c-power-supply) ($15), [Active Cooler](https://www.raspberrypi.com/products/active-cooler/) ($10), and [Bumper](https://www.raspberrypi.com/products/bumper/) ($4) 
 
 # Software
 * Ubuntu 24.04.3 LTS (64-bit)
