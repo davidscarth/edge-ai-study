@@ -1,6 +1,10 @@
 # Objective
 A feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
 
+# Hypothesis
+The Raspberry Pi 5 might be strong enough to run small models quickly enough to be usable.
+I believe the smallest ~1GB models are likely to be speedy but less helpful, and 2GB models slow but more helpful, and with enough time and patience the larger models might complete tasks extremely slowly.
+
 # Hardware
 The following build with a budget of approximately $200, purchased in-person at Micro Center:
 * [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) (16GB) (MSRP $129, found on sale for $99)
@@ -39,10 +43,6 @@ A selection of relatively recent small open-weight LLM models. Comparing same st
 | **[Gemma 3N E4B IT](https://huggingface.co/bartowski/google_gemma-3n-E4B-it-GGUF)** | November 2024 | IQ3_XS (3.17 GB) | 4.3B | 8,192 | Gemma 3 |
 | **[Llama 3.1 8B Instruct](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)**| July 2024 | IQ3_XS (3.52 GB) | 8.0B | 131,072 | Llama 3.1 |
 | **[Ministral 8B Instruct](https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF)** | October 2024 | IQ3_XS (3.52 GB) | 8.3B | 32,768 | Apache 2.0 |
-
-# Hypothesis
-The Raspberry Pi 5 might be strong enough to run small models quickly enough to be usable.
-I believe the smallest ~1GB models are likely to be speedy but less helpful, and 2GB models slow but more helpful, and with enough time and patience the larger models might complete tasks extremely slowly.
 
 # Methodology
 > **Under Development** This is a set of *super early* thoughts about what I want to do
