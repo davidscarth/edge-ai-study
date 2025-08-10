@@ -44,6 +44,79 @@ A selection of relatively recent small open-weight LLM models. Comparing same st
 | **[Llama 3.1 8B Instruct](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)**| July 2024 | IQ3_XS (3.52 GB) | 8.0B | 131,072 | Llama 3.1 |
 | **[Ministral 8B Instruct](https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF)** | October 2024 | IQ3_XS (3.52 GB) | 8.3B | 32,768 | Apache 2.0 |
 
+# Setup
+Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using the Raspberry Pi imager.
+Selected Ubuntu Server 24.04.3 LTS (64-bit).
+Used the imager options to set admin user/password, enable SSH, set Wifi.
+
+### Updated packages:
+```shell
+sudo apt update
+sudo apt upgrade
+```
+
+### Enabled SSH and allow through firewall:
+```shell
+sudo systemctl enable ssh
+sudo systemctl start ssh
+sudo ufw allow ssh
+sudo ufw enable
+```
+
+### Grab some basics
+```shell
+# Tools and headers
+sudo apt install -y libcurl4-openssl-dev
+sudo apt install -y git build-essential cmake pkg-config \
+                    libopenblas-dev python3-venv python3-pip curl
+```
+
+### Build llama.cpp
+```shell
+cd ~
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+
+# Configure (Release build, use OpenBLAS)
+cmake -B build -DCMAKE_BUILD_TYPE=Release \
+      -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
+      -DGGML_CCACHE=OFF
+
+# Compile (Pi 5 has 4 cores; -j4 is sensible)
+cmake --build build -j4
+```
+### Get huggingface-cli
+```shell
+python3 -m venv ~/venvs/hf
+source ~/venvs/hf/bin/activate
+pip install --upgrade pip
+pip install "huggingface_hub[cli]"
+```
+### Download an example model (SmolLM-2 1.7B-Instruct, Q4_K_M)
+```shell
+mkdir -p ~/models/smollm2
+~/venvs/hf/bin/huggingface-cli download \
+  bartowski/SmolLM2-1.7B-Instruct-GGUF \
+  --include "SmolLM2-1.7B-Instruct-Q4_K_M.gguf" \
+  --local-dir ~/models/smollm2
+```
+### Run llama.cpp’s OpenAI-compatible server
+```shell
+~/llama.cpp/build/bin/llama-server \
+  -m ~/models/smollm2/SmolLM2-1.7B-Instruct-Q4_K_M.gguf \
+  -t 4 -c 4096 -ngl 0 \
+  --host 0.0.0.0 --port 8081 \
+  --api-key pisecret
+```
+### Open WebUI in a venv
+```shell
+python3 -m venv ~/venvs/openwebui
+source ~/venvs/openwebui/bin/activate
+pip install --upgrade pip
+pip install open-webui
+DATA_DIR=~/.open-webui ~/venvs/openwebui/bin/open-webui serve
+```
+
 # Methodology
 > **Under Development** This is a set of *super early* thoughts about what I want to do
 > 
