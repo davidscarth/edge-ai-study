@@ -15,14 +15,14 @@ The following build with a budget of approximately $200, purchased in-person at 
 # Models
 A selection of relatively recent small open-weight LLM models. Comparing same standard quant size across models (Q4_K_M), and smaller size for the bigger models (IQ3_XS). Added Q8 for the 1GB just to see if there's any meaningful differences.
 
-## 1GB size class (~1B parameters)
+### 1GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q8_0 (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
 | **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q8_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
 | **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB)<br>Q8_0 (1.17 GB) | 1.1B | 2,048 | Apache 2.0 |
 
-## 2GB size class (~3-4B parameters)
+### 2GB size class (~3-4B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[SmolLM-3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF)** | November 2024 | Q4_K_M (1.92 GB) | 2.9B | 8,192 | Apache 2.0 |
@@ -33,7 +33,7 @@ A selection of relatively recent small open-weight LLM models. Comparing same st
 | **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB) | 4.3B | 131,072 | Gemma 3 |
 | **[Gemma 3N E2B IT](https://huggingface.co/bartowski/google_gemma-3n-E2B-it-GGUF)** | November 2024 | Q4_K_M (2.79 GB) | 2.2B | 8,192 | Gemma 3 |
 
-## 4GB size class (~7-8B parameters, aka "will it run?")
+### 4GB size class (~7-8B parameters, aka "will it run?")
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[Gemma 3N E4B IT](https://huggingface.co/bartowski/google_gemma-3n-E4B-it-GGUF)** | November 2024 | IQ3_XS (3.17 GB) | 4.3B | 8,192 | Gemma 3 |
@@ -62,7 +62,8 @@ A quick, standardized test to establish the raw performance baseline for each mo
         -   **Time to First Token (TTFT):** How long does the user wait for the first word? (Measures prompt processing speed).
         -   **Tokens per Second (T/s):** How fast does the text stream after the first token? (Measures generation speed).
 
-A longer test. This test will be run once.
+A longer test, taking up a larger context window. This test will be run once.
+
 2. **Understanding of larger prompts**
   * **Prompt:** `Read the entire following story carefully. After you have finished, answer only with the single sentence from the text that describes what Peter's father was made into.` (For this we will append the complete text of "The Tale of Peter Rabbit" by Beatrix Potter, 950 words, which is in the public domain)
     * **Scoring:**
@@ -102,4 +103,5 @@ This is a suite of structured prompts designed to test the model's practical use
 
 # Future
 Possibly repeat test on Intel N150/N200 miniPC? Also runs around $200usd.
+
 Possibly repeat again on used hardware found as cheap as possible around ~$200? Maybe something with a real video card, even?
