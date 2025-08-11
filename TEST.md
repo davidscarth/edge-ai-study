@@ -88,9 +88,8 @@ cd llama.cpp
 
 # Configure (Release build, use OpenBLAS)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
-      -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
-      -DGGML_CCACHE=OFF
-
+  -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
+  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF
 # Compile (Pi 5 has 4 cores; -j4 is sensible)
 cmake --build build -j4
 ```
@@ -99,14 +98,6 @@ cmake --build build -j4
 python3 -m venv ~/venvs/hf && source ~/venvs/hf/bin/activate
 pip install -U huggingface_hub
 hf version
-```
-### Download an example model (SmolLM-2 1.7B-Instruct, Q4_K_M)
-```shell
-mkdir -p ~/models/smollm2
-~/venvs/hf/bin/huggingface-cli download \
-  bartowski/SmolLM2-1.7B-Instruct-GGUF \
-  --include "SmolLM2-1.7B-Instruct-Q4_K_M.gguf" \
-  --local-dir ~/models/smollm2
 ```
 ### Download all the models (one-shot script for copy/paste)
 ```shell
