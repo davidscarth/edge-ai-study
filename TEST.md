@@ -24,14 +24,14 @@ The following build with a budget of approximately $200, purchased in-person at 
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v150
 
 ## Models
-A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added Q8 for the 1GB just to see if there's any meaningful differences.
+A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added select Q4_0 and Q4_0 QAT models to see if there are any meaningful differences between Q4_K_M and Q4_0 on ARM.
 
 ### 1GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q8_0 (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
-| **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q8_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
-| **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB)<br>Q8_0 (1.17 GB) | 1.1B | 2,048 | Apache 2.0 |
+| **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q4_0 QAT (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
+| **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q4_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
+| **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB)<br>Q4_0 (1.17 GB) | 1.1B | 2,048 | Apache 2.0 |
 
 ### 2GB size class (~3-4B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
@@ -41,7 +41,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Llama 3.2 3B Instruct](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)**| November 2024 | Q4_K_M (2.02 GB) | 3.1B | 131,072 | Llama 3.2 |
 | **[Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)**| October 2024 | Q4_K_M (2.49 GB) | 4.2B | 131,072 | MIT |
 | **[Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)**| October 2024 | Q4_K_M (2.49 GB) | 4.2B | 131,072 | MIT |
-| **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB) | 4.3B | 131,072 | Gemma 3 |
+| **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB), Q4_0 QAT (2.37 GB) | 4.3B | 131,072 | Gemma 3 |
 | **[Gemma 3N E2B IT](https://huggingface.co/bartowski/google_gemma-3n-E2B-it-GGUF)** | November 2024 | Q4_K_M (2.79 GB) | 2.2B | 8,192 | Gemma 3 |
 
 ### 4GB size class (~7-8B parameters, aka "will it run?")
