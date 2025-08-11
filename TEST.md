@@ -96,10 +96,9 @@ cmake --build build -j4
 ```
 ### Get huggingface-cli
 ```shell
-python3 -m venv ~/venvs/hf
-source ~/venvs/hf/bin/activate
-pip install --upgrade pip
-pip install "huggingface_hub[cli]"
+python3 -m venv ~/venvs/hf && source ~/venvs/hf/bin/activate
+pip install -U huggingface_hub
+hf version
 ```
 ### Download an example model (SmolLM-2 1.7B-Instruct, Q4_K_M)
 ```shell
