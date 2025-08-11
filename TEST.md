@@ -29,7 +29,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 ### 1GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q4_0 QAT (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
+| **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-1b-it-qat-GGUF) (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
 | **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q4_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
 | **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB)<br>Q4_0 (1.17 GB) | 1.1B | 2,048 | Apache 2.0 |
 
@@ -41,7 +41,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Llama 3.2 3B Instruct](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)**| November 2024 | Q4_K_M (2.02 GB) | 3.1B | 131,072 | Llama 3.2 |
 | **[Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)**| October 2024 | Q4_K_M (2.49 GB) | 4.2B | 131,072 | MIT |
 | **[Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)**| October 2024 | Q4_K_M (2.49 GB) | 4.2B | 131,072 | MIT |
-| **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB), Q4_0 QAT (2.37 GB) | 4.3B | 131,072 | Gemma 3 |
+| **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB), Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-4b-it-qat-GGUF) (2.37 GB) | 4.3B | 131,072 | Gemma 3 |
 | **[Gemma 3N E2B IT](https://huggingface.co/bartowski/google_gemma-3n-E2B-it-GGUF)** | November 2024 | Q4_K_M (2.79 GB) | 2.2B | 8,192 | Gemma 3 |
 
 ### 4GB size class (~7-8B parameters, aka "will it run?")
@@ -137,11 +137,11 @@ dl() {
 
 # 1GB class
 dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it            Q4_K_M
-dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it            Q8_0
+dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it-qat        Q4_0
 dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q4_K_M
-dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q8_0
+dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q4_0
 dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q4_K_M
-dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q8_0
+dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q4_0
 
 # 2GB class
 dl bartowski/HuggingFaceTB_SmolLM3-3B-GGUF        smollm3-3b               Q4_K_M
@@ -150,6 +150,7 @@ dl bartowski/Llama-3.2-3B-Instruct-GGUF           llama-3_2-3b-instruct    Q4_K_
 dl bartowski/microsoft_Phi-4-mini-instruct-GGUF   phi-4-mini-instruct      Q4_K_M
 dl bartowski/microsoft_Phi-4-mini-reasoning-GGUF  phi-4-mini-reasoning     Q4_K_M
 dl bartowski/google_gemma-3-4b-it-GGUF            gemma-3-4b-it            Q4_K_M
+dl bartowski/google_gemma-3-4b-it-qat-GGUF        gemma-3-4b-it-qat        Q4_0
 dl bartowski/google_gemma-3n-E2B-it-GGUF          gemma-3n-e2b-it          Q4_K_M
 
 # 4GB class
