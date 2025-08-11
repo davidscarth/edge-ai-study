@@ -110,7 +110,7 @@ mkdir -p ~/models/smollm2
   --host 0.0.0.0 --port 8081 \
   --api-key pisecret
 ```
-### Open WebUI in a venv
+### Open WebUI in a venv (open a new Terminal window)
 ```shell
 python3 -m venv ~/venvs/openwebui
 source ~/venvs/openwebui/bin/activate
@@ -118,6 +118,9 @@ pip install --upgrade pip
 pip install open-webui
 DATA_DIR=~/.open-webui ~/venvs/openwebui/bin/open-webui serve
 ```
+### Open WebUI in a browser
+
+Okay, now navigate to your browser http://192.168.x.x:8080 (wherever your raspi is) and login to OpenWebUI.
 
 # Methodology
 > **Under Development** This is a set of *super early* thoughts about what I want to do
