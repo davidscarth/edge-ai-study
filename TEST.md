@@ -109,6 +109,57 @@ mkdir -p ~/models/smollm2
   --include "SmolLM2-1.7B-Instruct-Q4_K_M.gguf" \
   --local-dir ~/models/smollm2
 ```
+### Download all the models (one-shot script)
+(login first using hf auth login)
+```shell
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Where to store models
+BASE="${HOME}/models"
+mkdir -p "$BASE"
+
+# Helper: download a single quant to a neat folder.
+# Works with the new 'hf download' syntax.
+dl() {
+  local repo="$1"   # e.g. bartowski/SmolLM2-1.7B-Instruct-GGUF
+  local slug="$2"   # folder name, e.g. smollm2-1_7b
+  local quant="$3"  # Q4_K_M | Q8_0 | IQ3_XS
+
+  local out="${BASE}/${slug}/${quant}"
+  mkdir -p "$out"
+  echo "==> ${repo}  (${quant})  ->  ${out}"
+  hf download "${repo}" \
+    --include "*${quant}.gguf" \
+    --local-dir "${out}"
+}
+
+# Log in first if needed for gated repos (Meta/Gemma):
+# hf auth login
+
+# 1GB class
+dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it            Q4_K_M
+dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it            Q8_0
+dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q4_K_M
+dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q8_0
+dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q4_K_M
+dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q8_0
+
+# 2GB class
+dl bartowski/HuggingFaceTB_SmolLM3-3B-GGUF        smollm3-3b               Q4_K_M
+dl mradermacher/Ministral-3b-instruct-i1-GGUF     ministral-3b-instruct    Q4_K_M
+dl bartowski/Llama-3.2-3B-Instruct-GGUF           llama-3_2-3b-instruct    Q4_K_M
+dl bartowski/microsoft_Phi-4-mini-instruct-GGUF   phi-4-mini-instruct      Q4_K_M
+dl bartowski/microsoft_Phi-4-mini-reasoning-GGUF  phi-4-mini-reasoning     Q4_K_M
+dl bartowski/google_gemma-3n-E2B-it-GGUF          gemma-3n-e2b-it          Q4_K_M
+
+# 4GB class
+dl bartowski/google_gemma-3n-E4B-it-GGUF          gemma-3n-e4b-it          IQ3_XS
+dl bartowski/Meta-Llama-3.1-8B-Instruct-GGUF      llama-3_1-8b-instruct    IQ3_XS
+dl bartowski/Ministral-8B-Instruct-2410-GGUF      ministral-8b-instruct    IQ3_XS
+
+echo "All done. Stored under: ${BASE}"
+```
 ### Run llama.cpp’s OpenAI-compatible server
 ```shell
 ~/llama.cpp/build/bin/llama-server \
