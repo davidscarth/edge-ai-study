@@ -1,7 +1,9 @@
 # secure-edge-ai-study
+Version 0.1-test<br>
+8/11/2025
 
 ## Objective
-A feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
+Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
 
 I will also use this exercise as a way to test setting up a self-contained LLM server.
 
@@ -22,7 +24,7 @@ The following build with a budget of approximately $200, purchased in-person at 
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v150
 
 ## Models
-A selection of relatively recent small open-weight LLM models. Comparing same standard quant size across models (Q4_K_M), and smaller size for the bigger models (IQ3_XS). Added Q8 for the 1GB just to see if there's any meaningful differences.
+A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added Q8 for the 1GB just to see if there's any meaningful differences.
 
 ### 1GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
