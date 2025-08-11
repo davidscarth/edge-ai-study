@@ -115,7 +115,7 @@ mkdir -p ~/models/smollm2
   -m ~/models/smollm2/SmolLM2-1.7B-Instruct-Q4_K_M.gguf \
   -t 4 -c 4096 -ngl 0 \
   --host 0.0.0.0 --port 8081 \
-  --api-key pisecret
+  --api-key <YOUR_RANDOM_KEY>
 ```
 ### Open WebUI in a venv (open a new Terminal window)
 ```shell
