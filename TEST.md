@@ -55,11 +55,13 @@ sudo apt update
 sudo apt upgrade
 ```
 
-### Enabled SSH and allow through firewall:
+### Enable SSH and allow through firewall
+*Also allow port 8080 for Open WebUI to use later, change CIDR to the range for your internal LAN if it is different*
 ```shell
 sudo systemctl enable ssh
 sudo systemctl start ssh
 sudo ufw allow ssh
+sudo ufw allow from 192.168.1.0/24 to any port 8080 proto tcp
 sudo ufw enable
 ```
 
