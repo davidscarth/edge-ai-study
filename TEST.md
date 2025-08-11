@@ -1,23 +1,27 @@
-# Objective
+# secure-edge-ai-study
+
+## Objective
 A feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
 
-# Hypothesis
+I will also use this exercise as a way to test setting up a self-contained LLM server.
+
+## Hypothesis
 The Raspberry Pi 5 might be strong enough to run small models quickly enough to be usable.
 I believe the smallest ~1GB models are likely to be speedy but less helpful, and 2GB models slow but more helpful, and with enough time and patience the larger models might complete tasks extremely slowly.
 
-# Hardware
+## Hardware
 The following build with a budget of approximately $200, purchased in-person at Micro Center:
 * [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) (16GB) (MSRP $129, found on sale for $99)
 * [Raspberry Pi SSD Kit](https://www.raspberrypi.com/products/ssd-kit/) (Official, 512GB NVMe) ($59)
 * [Raspberry Pi 45W Power Supply](https://www.microcenter.com/product/692335/raspberry-pi-45w-usb-c-power-supply) ($15), [Active Cooler](https://www.raspberrypi.com/products/active-cooler/) ($10), and [Bumper](https://www.raspberrypi.com/products/bumper/) ($4)
 
-# Software
+## Software
 * [Ubuntu](https://ubuntu.com/download/raspberry-pi) 24.04.3 LTS (64-bit)
 * [llama.cpp](https://github.com/ggml-org/llama.cpp) b6123
 * [Open WebUI](https://github.com/open-webui/open-webui) v0.6.21
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v150
 
-# Models
+## Models
 A selection of relatively recent small open-weight LLM models. Comparing same standard quant size across models (Q4_K_M), and smaller size for the bigger models (IQ3_XS). Added Q8 for the 1GB just to see if there's any meaningful differences.
 
 ### 1GB size class (~1B parameters)
@@ -45,7 +49,7 @@ A selection of relatively recent small open-weight LLM models. Comparing same st
 | **[Llama 3.1 8B Instruct](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)**| July 2024 | IQ3_XS (3.52 GB) | 8.0B | 131,072 | Llama 3.1 |
 | **[Ministral 8B Instruct](https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF)** | October 2024 | IQ3_XS (3.52 GB) | 8.3B | 32,768 | Apache 2.0 |
 
-# Setup
+## Setup
 Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using the Raspberry Pi imager.
 Selected Ubuntu Server 24.04.3 LTS (64-bit).
 Used the imager options to set admin user/password, enable SSH, set Wifi.
@@ -180,7 +184,7 @@ This is a suite of structured prompts designed to test the model's practical use
     * **Prompt:** TBD
     * **Scoring:** TBD
 
-# Results
+## Results
 Lets see how they did.
 ✅❌❓
 ### 1GB size class (~1B parameters)
@@ -208,7 +212,7 @@ Lets see how they did.
 | **[Llama 3.1 8B Instruct](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** | ?? sec | ?.??/?.?? GB |❓|❓|❓|❓|❓|❓|❓|❓|❓|
 | **[Ministral 8B Instruct](https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF)** | ?? sec | ?.??/?.?? GB |❓|❓|❓|❓|❓|❓|❓|❓|❓|
 
-# Future
+## Future
 Possibly repeat test on Intel N150/N200 miniPC? Also runs around $200usd.
 
 Possibly repeat again on used hardware found as cheap as possible around ~$200? Maybe something with a real video card, even?
