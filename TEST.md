@@ -9,12 +9,13 @@ I believe the smallest ~1GB models are likely to be speedy but less helpful, and
 The following build with a budget of approximately $200, purchased in-person at Micro Center:
 * [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) (16GB) (MSRP $129, found on sale for $99)
 * [Raspberry Pi SSD Kit](https://www.raspberrypi.com/products/ssd-kit/) (Official, 512GB NVMe) ($59)
-* [Raspberry Pi 45W Power Supply](https://www.microcenter.com/product/692335/raspberry-pi-45w-usb-c-power-supply) ($15), [Active Cooler](https://www.raspberrypi.com/products/active-cooler/) ($10), and [Bumper](https://www.raspberrypi.com/products/bumper/) ($4) 
+* [Raspberry Pi 45W Power Supply](https://www.microcenter.com/product/692335/raspberry-pi-45w-usb-c-power-supply) ($15), [Active Cooler](https://www.raspberrypi.com/products/active-cooler/) ($10), and [Bumper](https://www.raspberrypi.com/products/bumper/) ($4)
 
 # Software
 * [Ubuntu](https://ubuntu.com/download/raspberry-pi) 24.04.3 LTS (64-bit)
 * [llama.cpp](https://github.com/ggml-org/llama.cpp) b6123
 * [Open WebUI](https://github.com/open-webui/open-webui) v0.6.21
+* [llama-swap](https://github.com/mostlygeek/llama-swap) v150
 
 # Models
 A selection of relatively recent small open-weight LLM models. Comparing same standard quant size across models (Q4_K_M), and smaller size for the bigger models (IQ3_XS). Added Q8 for the 1GB just to see if there's any meaningful differences.
