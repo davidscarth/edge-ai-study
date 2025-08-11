@@ -1,0 +1,238 @@
+--- a/ggml-vulkan.cpp
++++ b/ggml-vulkan.cpp
+@@ -3221,103 +3221,179 @@
+         l_align = 128;
+         m_align =  64;
+         s_align =  32;
++
++        // Compact tiles for resource-constrained devices (<= 16 KiB SMEM)
++        if (device->properties.limits.maxComputeSharedMemorySize <= 16384) {
++            // f32/f16acc matmul (BK=16): m: 32x32, s: 16x16
++            m_warptile = { 32, 32, 16, 16, 0 };
++            s_warptile = { 16, 16, 16, 16, 0 };
++            m_wg_denoms = { 32, 32, 1 };
++            s_wg_denoms = { 16, 16, 1 };
++            m_align = 32;
++            s_align = 16;
++
++            // quant dequant+matmul (BK=32): m: 32x16, s: 16x8
++            m_warptile_mmq    = { 32, 16, 32, 16, 0 };
++            s_warptile_mmq    = { 16,  8, 32, 16, 0 };
++            m_mmq_wg_denoms  = { 32, 16, 1 };
++            s_mmq_wg_denoms  = { 16,  8, 1 };
++
++            // Qi_K mirrors the non-K quant tiles
++            m_warptile_mmq_k  = m_warptile_mmq;
++            s_warptile_mmq_k  = s_warptile_mmq;
++            m_mmq_wg_denoms_k = m_mmq_wg_denoms;
++            s_mmq_wg_denoms_k = s_mmq_wg_denoms;
++
++            // matmul_id (indexing path)
++            m_warptile_mmqid  = { 32, 16, 16, 16, 0 };
++            s_warptile_mmqid  = { 16,  8, 16, 16, 0 };
++            m_mmqid_wg_denoms = { 32, 16, 1 };
++            s_mmqid_wg_denoms = { 16, 16, 1 };
++
++            // Copy to l_* variants for robustness and rely on flags to disable
++            l_warptile = m_warptile;
++            l_warptile_mmq = m_warptile_mmq;
++            l_warptile_mmq_k = m_warptile_mmq_k;
++            l_warptile_mmqid = m_warptile_mmqid;
++            l_wg_denoms = m_wg_denoms;
++            l_mmq_wg_denoms = m_mmq_wg_denoms;
++            l_mmq_wg_denoms_k = m_mmq_wg_denoms_k;
++            l_mmqid_wg_denoms = m_mmqid_wg_denoms;
++            l_align = m_align;
++
++            for (uint32_t i = 0; i < GGML_TYPE_COUNT; ++i) {
++                ggml_type t = (ggml_type)i;
++
++                // Quant path is the largest SMEM consumer; gate on mmq shapes
++                if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, false, t)) {
++                    std::cerr << "ggml_vulkan: Error: Shared memory size too small for matmul (coopmat2)." << std::endl;
++                    throw std::runtime_error("Shared memory size too small for matmul.");
++                }
++                device->mul_mat_l[i] = false;
++                device->mul_mat_m[i] = ggml_vk_matmul_shmem_support(device, m_warptile_mmq, false, t);
++                device->mul_mat_s[i] = true;
++
++                // Gate mul_mat_id with same “mmq” tiles (ID has its own set in coopmat2 but SMEM scale is similar)
++                if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, true, t)) {
++                    device->mul_mat_id_l[i] = false;
++                    device->mul_mat_id_m[i] = false;
++                    device->mul_mat_id_s[i] = false;
++                } else {
++                    device->mul_mat_id_l[i] = false;
++                    device->mul_mat_id_m[i] = ggml_vk_matmul_shmem_support(device, m_warptile_mmq, true, t);
++                    device->mul_mat_id_s[i] = true;
++                }
++            }
++        }
+     } else {
+         // Matrix cores require different warp group sizes
+         const uint32_t tm_l = device->coopmat_support ? device->coopmat_m : 4;
+         const uint32_t tm_m = device->coopmat_support ? device->coopmat_m : 4;
+         const uint32_t tm_s = device->coopmat_support ? device->coopmat_m : 2;
+         const uint32_t tn_l = device->coopmat_support ? device->coopmat_n : 4;
+         const uint32_t tn_m = device->coopmat_support ? device->coopmat_n : 2;
+         const uint32_t tn_s = device->coopmat_support ? device->coopmat_n : 2;
+         const uint32_t tk_l = device->coopmat_support ? device->coopmat_k : 1;
+         const uint32_t tk_m = device->coopmat_support ? device->coopmat_k : 1;
+         const uint32_t tk_s = device->coopmat_support ? device->coopmat_k : 1;
+ 
+-        l_warptile = { 128, 128, 128, 16, subgroup_size_8 * 2, 64, 2, tm_l, tn_l, tk_l, subgroup_size_8 };
+-        m_warptile = { 128,  64,  64, 16, subgroup_size_8, 32, 2, tm_m, tn_m, tk_m, subgroup_size_8 };
+-        s_warptile = { subgroup_size_16, 32, 32, 16, 32, 32, 2, tm_s, tn_s, tk_s, subgroup_size_8 };
+-
+-        l_warptile_mmq = { 128, 128, 128, 32, subgroup_size_8 * 2, 64, 2, tm_l, tn_l, tk_l, subgroup_size_8 };
+-        m_warptile_mmq = { 128,  64,  64, 32, subgroup_size_8, 32, 2, tm_m, tn_m, tk_m, subgroup_size_8 };
+-        s_warptile_mmq = { subgroup_size_32, 32, 32, 32, 32, 32, 2, tm_s, tn_s, tk_s, subgroup_size_8 };
+-
+-        l_warptile_mmq_int = { 128, 128, 128, 32, subgroup_size_8 * 2, 64, 2, 4, 4, 1, subgroup_size_8 };
+-        m_warptile_mmq_int = { 128,  64,  64, 32, subgroup_size_8,     32, 2, 2, 2, 1, subgroup_size_8 };
+-        s_warptile_mmq_int = { subgroup_size_32, 32, 32, 32, 32,       32, 2, 2, 1, 1, subgroup_size_8 };
+-
+-        // chip specific tuning
+-        if ((device->architecture == AMD_GCN) && (device->driver_id != vk::DriverId::eAmdProprietary)) {
+-            m_warptile_mmq = m_warptile_mmq_int = { 256, 64, 64, 32, 16, 16, 2, 2, 2, 1, 16 };
+-        }
+-
+-        l_mmq_wg_denoms = l_wg_denoms = {128, 128, 1 };
+-        m_mmq_wg_denoms = m_wg_denoms = { 64,  64, 1 };
+-        s_mmq_wg_denoms = s_wg_denoms = { 32,  32, 1 };
+-        l_align = 128;
+-        m_align =  64;
+-        s_align =  32;
+-
+-        for (uint32_t i = 0; i < GGML_TYPE_COUNT; ++i) {
+-            ggml_type t = (ggml_type)i;
+-            // Disable medium and large matrix multiplication if not enough shared memory is available
+-            // Check mmq warptiles as the largest configuration
+-            // Throw an error if not enough for any matrix multiplication is available
+-            if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, false, t)) {
+-                std::cerr << "ggml_vulkan: Error: Shared memory size too small for matrix multiplication." << std::endl;
+-                throw std::runtime_error("Shared memory size too small for matrix multiplication.");
+-            } else if (!ggml_vk_matmul_shmem_support(device, m_warptile_mmq, false, t)) {
+-                device->mul_mat_m[i] = false;
+-                device->mul_mat_l[i] = false;
+-            } else if (!ggml_vk_matmul_shmem_support(device, l_warptile_mmq, false, t)) {
+-                device->mul_mat_l[i] = false;
+-            }
+-
+-            // Disable mul_mat_id if not enough shared memory is available
+-            if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, true, t)) {
+-                device->mul_mat_id_s[i] = false;
+-                device->mul_mat_id_m[i] = false;
+-                device->mul_mat_id_l[i] = false;
+-            } else if (!ggml_vk_matmul_shmem_support(device, m_warptile_mmq, true, t)) {
+-                device->mul_mat_id_m[i] = false;
+-                device->mul_mat_id_l[i] = false;
+-            } else if (!ggml_vk_matmul_shmem_support(device, l_warptile_mmq, true, t)) {
+-                device->mul_mat_id_l[i] = false;
++        const bool low_smem_device = device->properties.limits.maxComputeSharedMemorySize <= 16384;
++
++        if (low_smem_device) {
++            // f32: m: 32x32x16, s: 16x16x16
++            m_warptile = { subgroup_size_32, 32, 32, 16, 32, 32, 2, tm_m, tn_m, tk_m, subgroup_size_8 };
++            s_warptile = { subgroup_size_16, 16, 16, 16, 16, 16, 2, tm_s, tn_s, tk_s, subgroup_size_8 };
++
++            // quant: m: 32x16x32, s: 16x8x32
++            m_warptile_mmq = { subgroup_size_32, 32, 16, 32, 32, 32, 2, tm_m, tn_m, tk_m, subgroup_size_8 };
++            s_warptile_mmq = { subgroup_size_16, 16,  8, 32, 16, 16, 2, tm_s, tn_s, tk_s, subgroup_size_8 };
++
++            // Copy to l_* variants for robustness and rely on flags to disable
++            l_warptile     = m_warptile;
++            l_warptile_mmq = m_warptile_mmq;
++
++            // Use same tiles for integer dot product path
++            m_warptile_mmq_int = m_warptile_mmq;
++            s_warptile_mmq_int = s_warptile_mmq;
++            l_warptile_mmq_int = m_warptile_mmq_int;
++
++            m_wg_denoms = { 32, 32, 1 };
++            s_wg_denoms = { 16, 16, 1 };
++
++            m_mmq_wg_denoms = { 32, 16, 1 };
++            s_mmq_wg_denoms = { 16,  8, 1 };
++
++            l_wg_denoms = m_wg_denoms;
++            l_mmq_wg_denoms = m_mmq_wg_denoms;
++
++            m_align = 32;
++            s_align = 16;
++            l_align = m_align;
++
++            for (uint32_t i = 0; i < GGML_TYPE_COUNT; ++i) {
++                ggml_type t = (ggml_type)i;
++                // Enable only the small matmul variants if they fit
++                if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, false, t)) {
++                    std::cerr << "ggml_vulkan: Error: Shared memory size too small for even the smallest matmul tile on this device." << std::endl;
++                    throw std::runtime_error("Shared memory size too small for matmul.");
++                }
++                device->mul_mat_m[i] = ggml_vk_matmul_shmem_support(device, m_warptile_mmq, false, t);
++                device->mul_mat_s[i] = true; // Already checked it fits
++                device->mul_mat_l[i] = false;
++
++                if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, true, t)) {
++                    device->mul_mat_id_m[i] = false;
++                    device->mul_mat_id_s[i] = false;
++                } else {
++                    device->mul_mat_id_m[i] = ggml_vk_matmul_shmem_support(device, m_warptile_mmq, true, t);
++                    device->mul_mat_id_s[i] = true;
++                }
++                device->mul_mat_id_l[i] = false;
++            }
++        } else {
++            l_warptile = { 128, 128, 128, 16, subgroup_size_8 * 2, 64, 2, tm_l, tn_l, tk_l, subgroup_size_8 };
++            m_warptile = { 128,  64,  64, 16, subgroup_size_8, 32, 2, tm_m, tn_m, tk_m, subgroup_size_8 };
++            s_warptile = { subgroup_size_16, 32, 32, 16, 32, 32, 2, tm_s, tn_s, tk_s, subgroup_size_8 };
++
++            l_warptile_mmq = { 128, 128, 128, 32, subgroup_size_8 * 2, 64, 2, tm_l, tn_l, tk_l, subgroup_size_8 };
++            m_warptile_mmq = { 128,  64,  64, 32, subgroup_size_8, 32, 2, tm_m, tn_m, tk_m, subgroup_size_8 };
++            s_warptile_mmq = { subgroup_size_32, 32, 32, 32, 32, 32, 2, tm_s, tn_s, tk_s, subgroup_size_8 };
++
++            l_warptile_mmq_int = { 128, 128, 128, 32, subgroup_size_8 * 2, 64, 2, 4, 4, 1, subgroup_size_8 };
++            m_warptile_mmq_int = { 128,  64,  64, 32, subgroup_size_8,     32, 2, 2, 2, 1, subgroup_size_8 };
++            s_warptile_mmq_int = { subgroup_size_32, 32, 32, 32, 32,       32, 2, 2, 1, 1, subgroup_size_8 };
++
++            // chip specific tuning
++            if ((device->architecture == AMD_GCN) && (device->driver_id != vk::DriverId::eAmdProprietary)) {
++                m_warptile_mmq = m_warptile_mmq_int = { 256, 64, 64, 32, 16, 16, 2, 2, 2, 1, 16 };
++            }
++
++            l_mmq_wg_denoms = l_wg_denoms = {128, 128, 1 };
++            m_mmq_wg_denoms = m_wg_denoms = { 64,  64, 1 };
++            s_mmq_wg_denoms = s_wg_denoms = { 32,  32, 1 };
++            l_align = 128;
++            m_align =  64;
++            s_align =  32;
++
++            for (uint32_t i = 0; i < GGML_TYPE_COUNT; ++i) {
++                ggml_type t = (ggml_type)i;
++                // Disable medium and large matrix multiplication if not enough shared memory is available
++                // Check mmq warptiles as the largest configuration
++                // Throw an error if not enough for any matrix multiplication is available
++                if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, false, t)) {
++                    std::cerr << "ggml_vulkan: Error: Shared memory size too small for matrix multiplication." << std::endl;
++                    throw std::runtime_error("Shared memory size too small for matrix multiplication.");
++                } else if (!ggml_vk_matmul_shmem_support(device, m_warptile_mmq, false, t)) {
++                    device->mul_mat_m[i] = false;
++                    device->mul_mat_l[i] = false;
++                } else if (!ggml_vk_matmul_shmem_support(device, l_warptile_mmq, false, t)) {
++                    device->mul_mat_l[i] = false;
++                }
++
++                // Disable mul_mat_id if not enough shared memory is available
++                if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, true, t)) {
++                    device->mul_mat_id_s[i] = false;
++                    device->mul_mat_id_m[i] = false;
++                    device->mul_mat_id_l[i] = false;
++                } else if (!ggml_vk_matmul_shmem_support(device, m_warptile_mmq, true, t)) {
++                    device->mul_mat_id_m[i] = false;
++                    device->mul_mat_id_l[i] = false;
++                } else if (!ggml_vk_matmul_shmem_support(device, l_warptile_mmq, true, t)) {
++                    device->mul_mat_id_l[i] = false;
++                }
+             }
+         }
+     }
