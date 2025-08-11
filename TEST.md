@@ -109,8 +109,7 @@ mkdir -p ~/models/smollm2
   --include "SmolLM2-1.7B-Instruct-Q4_K_M.gguf" \
   --local-dir ~/models/smollm2
 ```
-### Download all the models (one-shot script)
-(login first using hf auth login)
+### Download all the models (one-shot script for copy/paste)
 ```shell
 #!/usr/bin/env bash
 set -euo pipefail
@@ -151,6 +150,7 @@ dl mradermacher/Ministral-3b-instruct-i1-GGUF     ministral-3b-instruct    Q4_K_
 dl bartowski/Llama-3.2-3B-Instruct-GGUF           llama-3_2-3b-instruct    Q4_K_M
 dl bartowski/microsoft_Phi-4-mini-instruct-GGUF   phi-4-mini-instruct      Q4_K_M
 dl bartowski/microsoft_Phi-4-mini-reasoning-GGUF  phi-4-mini-reasoning     Q4_K_M
+dl bartowski/google_gemma-3-4b-it-GGUF            gemma-3-4b-it            Q4_K_M
 dl bartowski/google_gemma-3n-E2B-it-GGUF          gemma-3n-e2b-it          Q4_K_M
 
 # 4GB class
