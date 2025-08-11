@@ -160,6 +160,58 @@ dl bartowski/Ministral-8B-Instruct-2410-GGUF      ministral-8b-instruct    IQ3_X
 
 echo "All done. Stored under: ${BASE}"
 ```
+### Build llama-swap
+```shell
+sudo apt update
+sudo apt install -y golang nodejs npm make
+git clone https://github.com/mostlygeek/llama-swap.git ~/llama-swap-src
+cd ~/llama-swap-src
+make clean all
+install -Dm755 build/llama-swap "$HOME/bin/llama-swap"
+"$HOME/bin/llama-swap" --version
+```
+### Generate llama-swap config
+```shell
+cat > ~/make-llama-swap-yaml.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+BASE="$HOME/models"
+BIN="$HOME/llama.cpp/build/bin/llama-server"
+OUT="$HOME/llama-swap.yaml"
+
+echo "listen: \"127.0.0.1:9292\"" > "$OUT"
+echo "healthCheckTimeout: 300"   >> "$OUT"
+echo "startPort: 10001"          >> "$OUT"
+echo "models:"                   >> "$OUT"
+
+toPretty() { echo "$1" | sed -E 's/_/./g; s/-/ /g'; }
+
+for d in "$BASE"/*; do
+  [[ -d "$d" ]] || continue
+  name=$(basename "$d")
+  for f in q4km.gguf q4_0.gguf iq3_xs.gguf; do
+    p="$d/$f"
+    [[ -e "$p" ]] || continue
+    key="$name-${f%%.*}"   # e.g., smollm2-1_7b-q4km
+    label=$(echo "${f%%.*}" | tr '_' '-' | tr a-z A-Z)  # Q4KM / Q4-0 / IQ3-XS
+    alias="$(toPretty "$name") (${label})"
+    cat >> "$OUT" <<YAML
+  "$key":
+    cmd: |
+      $BIN --host 127.0.0.1 --port \${PORT} \
+           -m $p -t 4 -c 4096 -ngl 0 \
+           --alias "$alias"
+    ttl: 600
+YAML
+    echo "added: $key -> $p"
+  done
+done
+
+echo "wrote $OUT"
+EOF
+chmod +x ~/make-llama-swap-yaml.sh
+~/make-llama-swap-yaml.sh
+```
 ### Run llama.cpp’s OpenAI-compatible server
 ```shell
 ~/llama.cpp/build/bin/llama-server \
