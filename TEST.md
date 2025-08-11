@@ -166,7 +166,7 @@ echo "All done. Stored under: ${BASE}"
   -m ~/models/smollm2/SmolLM2-1.7B-Instruct-Q4_K_M.gguf \
   -t 4 -c 4096 -ngl 0 \
   --host 0.0.0.0 --port 8081 \
-  --api-key <YOUR_RANDOM_KEY>
+  --api-key <YOUR_RANDOM_KEY> # Replace with a string of your choice, you'll need it later
 ```
 ### Open WebUI in a venv (open a new Terminal window)
 ```shell
