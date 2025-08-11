@@ -5,7 +5,7 @@ Version 0.1-test<br>
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
 
-I will also use this exercise as a way to test setting up a self-contained LLM server.
+I will also use this exercise as a way to test setting up a self-contained LLM server, as I expect much of the setup and configurations will be useful elsewhere.
 
 ## Hypothesis
 The Raspberry Pi 5 might be strong enough to run small models quickly enough to be usable.
@@ -52,9 +52,9 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Ministral 8B Instruct](https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF)** | October 2024 | IQ3_XS (3.52 GB) | 8.3B | 32,768 | Apache 2.0 |
 
 ## Setup
-Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using the Raspberry Pi imager.
-Selected Ubuntu Server 24.04.3 LTS (64-bit).
-Used the imager options to set admin user/password, enable SSH, set Wifi.
+* Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using the Raspberry Pi imager.
+* Selected Raspberry Pi 5, Ubuntu Server 24.04.3 LTS (64-bit).
+* Used the imager options to set Admin user/password, enable SSH, set Wifi SSID/password.
 
 ### Updated packages:
 ```shell
