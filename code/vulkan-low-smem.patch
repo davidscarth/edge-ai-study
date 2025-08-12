@@ -108,7 +108,7 @@
 +                }
              }
 -
-+        
++
              // Disable mul_mat_id if not enough shared memory is available
 -            if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmq, true, t)) {
 +            if (!ggml_vk_matmul_shmem_support(device, s_warptile_mmqid, true, t)) {
