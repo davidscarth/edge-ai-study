@@ -92,7 +92,7 @@ cd llama.cpp
 
 # Configure (Release build, use OpenBLAS)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
-  -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
+  -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
   -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF
 # Compile (Pi 5 has 4 cores; -j4 is sensible)
 cmake --build build -j4
@@ -309,6 +309,28 @@ Lets see how they did.
 | **[Gemma 3N E4B IT](https://huggingface.co/bartowski/google_gemma-3n-E4B-it-GGUF)** | ?? sec | ?.??/?.?? GB ||||||||||
 | **[Llama 3.1 8B Instruct](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** | ?? sec | ?.??/?.?? GB ||||||||||
 | **[Ministral 8B Instruct](https://huggingface.co/bartowski/Ministral-8B-Instruct-2410-GGUF)** | ?? sec | ?.??/?.?? GB ||||||||||
+
+## Experiments with VideoCore
+If you simply build llama.cpp on a Raspberry Pi 5 with the -DGGML_VULKAN=ON flag and run it, you will get the following error:
+> ggml_vulkan: Error: Shared memory size too small for matrix multiplication.
+> llama_model_load: error loading model: Shared memory size too small for matrix multiplication.
+> llama_model_load_from_file_impl: failed to load model
+
+We will attempt to patch ggml-vulkan to detect and configure low-smem devices (vulkan-low-smem.patch).
+
+### Build llama.cpp
+```shell
+cd ~
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+
+# Configure (Release build, use OpenBLAS)
+cmake -B build -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
+  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF
+# Compile (Pi 5 has 4 cores; -j4 is sensible)
+cmake --build build -j4
+```
 
 ## Future
 Possibly repeat test on Intel N150/N200 miniPC? Also runs around $200usd.
