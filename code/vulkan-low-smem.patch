@@ -1,5 +1,5 @@
---- a/ggml-vulkan.cpp
-+++ b/ggml-vulkan.cpp
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
 @@ -2109,6 +2109,44 @@
      uint32_t l_align, m_align, s_align;
      if (device->coopmat2) {
