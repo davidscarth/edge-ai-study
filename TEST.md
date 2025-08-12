@@ -1,6 +1,6 @@
 # edge-ai-study
 Version 0.1-test<br>
-8/11/2025
+8/12/2025
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
