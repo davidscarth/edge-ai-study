@@ -1,4 +1,4 @@
-# secure-edge-ai-study
+# edge-ai-study
 Version 0.1-test<br>
 8/11/2025
 
