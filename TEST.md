@@ -205,6 +205,7 @@ chmod +x ~/make-llama-swap-yaml.sh
   --api-key <YOUR_RANDOM_KEY> # Replace with a string of your choice, you'll need it later
 ```
 ### Open WebUI in a venv (open a new Terminal window)
+> I should probably update this to a docker method, as that seems to be highly suggested and most supported install from the Open WebUI devs
 ```shell
 python3 -m venv ~/venvs/openwebui
 source ~/venvs/openwebui/bin/activate
