@@ -318,6 +318,8 @@ If you simply build llama.cpp on a Raspberry Pi 5 with the -DGGML_VULKAN=ON flag
 
 We will attempt to patch ggml-vulkan to detect and configure low-smem devices ([vulkan-low-smem.patch](https://github.com/davidscarth/edge-ai-study/blob/main/code/vulkan-low-smem.patch)).
 
+tldr; it goes poorly.
+
 ### Build llama.cpp
 ```shell
 cd ~
