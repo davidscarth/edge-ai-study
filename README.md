@@ -1,5 +1,5 @@
 # edge-ai-study
-Feasibility Study on Edge AI on highly resource-constrained hardware.
+Feasibility Study of Edge AI on highly resource-constrained hardware.
 
 ## License
 Unless otherwise noted, the documentation and written content of this project are licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
