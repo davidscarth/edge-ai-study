@@ -1,0 +1,129 @@
+
+#version 450
+
+// Workgroup size via specialization
+layout(local_size_x_id = 0, local_size_y_id = 1, local_size_z = 1) in;
+
+// Tile & behavior spec constants
+layout(constant_id = 2) const uint TM = 64u;
+layout(constant_id = 3) const uint TN = 64u;
+layout(constant_id = 4) const uint TK = 16u;
+layout(constant_id = 5) const uint USE_SMEM = 1u;
+// Shared memory size in floats (TM*TK + TK*TN), set per pipeline
+layout(constant_id = 6) const uint SH_ELEMS = 4096u;
+
+layout(set=0, binding=0, std430) readonly buffer ABuf { float A[]; };
+layout(set=0, binding=1, std430) readonly buffer BBuf { float B[]; };
+layout(set=0, binding=2, std430) writeonly buffer CBuf { float C[]; };
+
+layout(push_constant) uniform Push { uint M,N,K,lda,ldb,ldc; } pc;
+
+shared float Sh[SH_ELEMS];
+
+uint idxA(uint r, uint c) { return r * pc.lda + c; }
+uint idxB(uint r, uint c) { return r * pc.ldb + c; }
+uint idxC(uint r, uint c) { return r * pc.ldc + c; }
+
+void main() {
+    const uint LSX = gl_WorkGroupSize.x;
+    const uint LSY = gl_WorkGroupSize.y;
+
+    uint tileCol = gl_WorkGroupID.x * TN;
+    uint tileRow = gl_WorkGroupID.y * TM;
+
+    uint tidx = gl_LocalInvocationID.x;
+    uint tidy = gl_LocalInvocationID.y;
+
+    const uint RN = (TN + LSX - 1u) / LSX; // columns/thread
+    const uint RM = (TM + LSY - 1u) / LSY; // rows/thread
+
+    // Assuming host caps RN,RM <= 8
+    float acc[8][8];
+    for (uint rr=0; rr<RM; ++rr)
+        for (uint cc=0; cc<RN; ++cc)
+            acc[rr][cc] = 0.0;
+
+    uint numThreads = LSX * LSY;
+    uint linId = tidy * LSX + tidx;
+
+    uint offA = 0u;
+    uint offB = TM * TK;
+
+    if (USE_SMEM != 0u) {
+        for (uint kk = 0u; kk < pc.K; kk += TK) {
+            // Load Asub (TM x TK)
+            for (uint i = linId; i < TM*TK; i += numThreads) {
+                uint r = i / TK;
+                uint c = i - r * TK;
+                uint gRow = tileRow + r;
+                uint gCol = kk + c;
+                float v = 0.0;
+                if (gRow < pc.M && gCol < pc.K) v = A[idxA(gRow, gCol)];
+                Sh[offA + i] = v;
+            }
+            // Load Bsub (TK x TN)
+            for (uint i = linId; i < TK*TN; i += numThreads) {
+                uint r = i / TN;
+                uint c = i - r * TN;
+                uint gRow = kk + r;
+                uint gCol = tileCol + c;
+                float v = 0.0;
+                if (gRow < pc.K && gCol < pc.N) v = B[idxB(gRow, gCol)];
+                Sh[offB + i] = v;
+            }
+            barrier();
+
+            #pragma unroll
+            for (uint k2 = 0u; k2 < TK; ++k2) {
+                #pragma unroll
+                for (uint rr=0; rr<RM; ++rr) {
+                    uint tr = tidy + rr*LSY;
+                    if (tr >= TM) continue;
+                    float a = Sh[offA + tr*TK + k2];
+                    #pragma unroll
+                    for (uint cc=0; cc<RN; ++cc) {
+                        uint tc = tidx + cc*LSX;
+                        if (tc >= TN) continue;
+                        float b = Sh[offB + k2*TN + tc];
+                        acc[rr][cc] += a * b;
+                    }
+                }
+            }
+            barrier();
+        }
+    } else {
+        // Streaming path without SMEM
+        for (uint kk = 0u; kk < pc.K; kk += TK) {
+            for (uint k2 = 0u; k2 < TK; ++k2) {
+                uint gk = kk + k2;
+                if (gk >= pc.K) break;
+                for (uint rr=0; rr<RM; ++rr) {
+                    uint tr = tidy + rr*LSY;
+                    uint gr = tileRow + tr;
+                    if (tr >= TM || gr >= pc.M) continue;
+                    for (uint cc=0; cc<RN; ++cc) {
+                        uint tc = tidx + cc*LSX;
+                        uint gc = tileCol + tc;
+                        if (tc >= TN || gc >= pc.N) continue;
+                        float a = A[idxA(gr, gk)];
+                        float b = B[idxB(gk, gc)];
+                        acc[rr][cc] += a * b;
+                    }
+                }
+            }
+        }
+    }
+
+    // Write back
+    for (uint rr=0; rr<RM; ++rr) {
+        uint tr = tidy + rr*LSY;
+        uint gr = tileRow + tr;
+        if (tr >= TM || gr >= pc.M) continue;
+        for (uint cc=0; cc<RN; ++cc) {
+            uint tc = tidx + cc*LSX;
+            uint gc = tileCol + tc;
+            if (tc >= TN || gc >= pc.N) continue;
+            C[idxC(gr, gc)] = acc[rr][cc];
+        }
+    }
+}
