@@ -27,15 +27,15 @@ cd build
 AT_CSV=results.csv ./autotune --preset=classic --lsz=16x8,16x16,32x8
 ```
 
-## Flags
-- `--preset=` classic | classic_legacy | extended16k | extended16k_capped
+### Flags
+- `--preset=` `classic | classic_legacy | extended16k | extended16k_capped`
 - `--lsz=16x8[,16x16[,32x8[,16x4[,16x1]]]]`
 - `--Ms=64,80,96,112`  `--Ns=32,48,64,80`
 - `--enable-smem=1|0`  `--enable-nosmem=1|0`
 - `--max-rn=N` `--max-rm=N`  (defaults **8**; limits per-thread accumulator grid)
 - `--add-tiles=96x64,112x64,...`
 
-Env:
+### Env:
 - `AT_M, AT_N, AT_K` (default 1024)
 - `AT_WARM, AT_REP` (default 5, 30)
 - `AT_TIMEOUT_MS` (per-candidate timeout, default 600000)
