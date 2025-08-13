@@ -310,7 +310,7 @@ We will attempt to patch ggml-vulkan to detect and configure low-smem devices ([
 
 tldr; it goes poorly.
 
-I'm running a benchmark for tile sizes to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage.
+I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/edge-ai-study/tree/main/code/vk-autotune) to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage.
 
 ### Build llama.cpp
 ```shell
