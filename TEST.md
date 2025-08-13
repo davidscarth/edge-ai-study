@@ -8,8 +8,9 @@ Perform a feasibility study for running chat-oriented LLMs on highly resource-co
 I will also use this exercise as a way to test setting up a self-contained LLM server, as I expect much of the setup and configurations will be useful elsewhere.
 
 ## Hypothesis
-The Raspberry Pi 5 might be strong enough to run small models quickly enough to be usable.
-I believe the smallest ~1GB models are likely to be speedy but less helpful, and 2GB models slow but more helpful, and with enough time and patience the larger models might complete tasks extremely slowly.
+On a Raspberry Pi 5, it is feasible to run Large Language Models (LLMs) with sufficient speed and utility for practical local usage, with performance varying significantly based on model size, specific model selection, and tuning settings.
+
+We will explore those beliefs here. I believe the smallest ~1B parameter models are likely to be speedy but less helpful, and ~3-4B parameter models slower but more helpful (potentially optimal?), and with enough time and patience the larger (~7B parameter) models might complete tasks extremely slowly. We may be able to get speedups with tuning settings, and carefully selecting models.
 
 ## Hardware
 The following build with a budget of approximately $200, purchased in-person at Micro Center:
@@ -26,14 +27,14 @@ The following build with a budget of approximately $200, purchased in-person at 
 ## Models
 A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added select Q4_0 and Q4_0 QAT models to see if there are any meaningful differences between Q4_K_M and Q4_0 on ARM.
 
-### 1GB size class (~1B parameters)
+### ~1B parameters (1GB size class)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-1b-it-qat-GGUF) (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
 | **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q4_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
 | **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB)<br>Q4_0 (1.17 GB) | 1.1B | 2,048 | Apache 2.0 |
 
-### 2GB size class (~3-4B parameters)
+### ~3-4B parameters (2GB size class)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[SmolLM-3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF)** | November 2024 | Q4_K_M (1.92 GB) | 2.9B | 8,192 | Apache 2.0 |
@@ -44,7 +45,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB), Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-4b-it-qat-GGUF) (2.37 GB) | 4.3B | 131,072 | Gemma 3 |
 | **[Gemma 3N E2B IT](https://huggingface.co/bartowski/google_gemma-3n-E2B-it-GGUF)** | November 2024 | Q4_K_M (2.79 GB) | 2.2B | 8,192 | Gemma 3 |
 
-### 4GB size class (~7-8B parameters, aka "will it run?")
+### ~7-8B parameters (4GB size class, aka "will it run?")
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[Gemma 3N E4B IT](https://huggingface.co/bartowski/google_gemma-3n-E4B-it-GGUF)** | November 2024 | IQ3_XS (3.17 GB) | 4.3B | 8,192 | Gemma 3 |
