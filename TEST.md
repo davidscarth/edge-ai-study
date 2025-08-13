@@ -8,9 +8,9 @@ Perform a feasibility study for running chat-oriented LLMs on highly resource-co
 I will also use this exercise as a way to test setting up a self-contained LLM server, as I expect much of the setup and configurations will be useful elsewhere.
 
 ## Hypothesis
-On a Raspberry Pi 5, it is feasible to run Large Language Models (LLMs) with sufficient speed and utility for practical local usage, with performance varying significantly based on model size, specific model selection, and tuning settings.
+On a Raspberry Pi 5, it is feasible to run Large Language Models (LLMs) with sufficient speed and utility for practical local usage, with performance varying based on model size, model selection, and tuning settings.
 
-We will explore those beliefs here. I believe the smallest ~1B parameter models are likely to be speedy but less helpful, and ~3-4B parameter models slower but more helpful (potentially optimal?), and with enough time and patience the larger (~7B parameter) models might complete tasks extremely slowly. We may be able to get speedups with tuning settings, and carefully selecting models.
+I believe the smallest ~1B parameter models are likely to be speedy but less helpful, and ~3-4B parameter models slower but more helpful (potentially optimal for this hardware class?), and with enough time and patience the larger (~7B parameter) models might complete tasks extremely slowly. We may be able to get speedups with tuning settings (CPU tuning? GPU offload?), and carefully selecting models (quant levels particularly). All of this will be explored further here.
 
 ## Hardware
 The following build with a budget of approximately $200, purchased in-person at Micro Center:
@@ -324,6 +324,8 @@ cmake --build build -j4
 ```
 
 ## Future
+Possibly explore attaching an external graphics card? Maybe a cheapo one?
+
 Possibly repeat test on Intel N150/N200 miniPC? Also runs around $200usd.
 
 Possibly repeat again on used hardware found as cheap as possible around ~$200? Maybe something with a real video card, even?
