@@ -322,11 +322,7 @@ tldr; it goes poorly.
 
 ### Build llama.cpp
 ```shell
-cd ~
-git clone https://github.com/ggml-org/llama.cpp
-cd llama.cpp
-
-# Configure (Release build, use OpenBLAS)
+# Configure (Release build, use OpenBLAS and Vulkan)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
   -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
   -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF
