@@ -65,25 +65,14 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 sudo apt update
 sudo apt upgrade
 ```
-
-### Enable SSH and allow through firewall
-*Also allow port 8080 for Open WebUI to use later, change CIDR to the range for your internal LAN if it is different*
-```shell
-sudo systemctl enable ssh
-sudo systemctl start ssh
-sudo ufw allow ssh
-sudo ufw allow from 192.168.1.0/24 to any port 8080 proto tcp
-sudo ufw enable
-```
-
 ### Grab some basics
 ```shell
-# Tools and headers
-sudo apt install -y libcurl4-openssl-dev
+# Tools and such, lets get everything we might need
 sudo apt install -y git build-essential cmake pkg-config \
-                    libopenblas-dev python3-venv python3-pip curl
+                    libvulkan-dev glslang-tools spirv-tools vulkan-tools glslc\
+                    libopenblas-dev python3-venv python3-pip curl \
+                    libcurl4-openssl-dev
 ```
-
 ### Build llama.cpp
 ```shell
 cd ~
@@ -319,6 +308,8 @@ If you simply build llama.cpp on a Raspberry Pi 5 with the -DGGML_VULKAN=ON flag
 We will attempt to patch ggml-vulkan to detect and configure low-smem devices ([vulkan-low-smem.patch](https://github.com/davidscarth/edge-ai-study/blob/main/code/vulkan-low-smem.patch)).
 
 tldr; it goes poorly.
+
+I'm running a benchmark for tile sizes to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage.
 
 ### Build llama.cpp
 ```shell
