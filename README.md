@@ -10,9 +10,9 @@ Feasibility Study of Edge AI on highly resource-constrained hardware.
 * `README.md`: You are here.
 
 ## How to Use
-Begin by reading the main RUNBOOK.md.
+Begin by reading the main TEST.md.
 
-Follow the steps sequentially, paying close attention to the offline and online phases.
+Any research will be noted in there.
 
 ## Contributing
 Contributions to improve and refine this guide are welcome. Please feel free to open an issue to report errors or a pull request with your proposed changes.
