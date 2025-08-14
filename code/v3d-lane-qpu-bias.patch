@@ -1,0 +1,136 @@
+--- a/ggml/src/ggml-vulkan/ggml-vulkan.cpp
++++ b/ggml/src/ggml-vulkan/ggml-vulkan.cpp
+@@ -10,6 +10,8 @@
+ #include <algorithm>
+ #include <cmath>
+ #include <iomanip>
++#include <fstream>
++#include <cstdlib>
+ #include <iostream>
+ #include <tuple>
+ #include <vector>
+@@ -50,6 +52,42 @@
+ #include "ggml-backend-impl.h"
+ 
+ #include "ggml-vulkan-shaders.hpp"
++
++static uint32_t ggml_vk_probe_v3d_qpus() {
++    // Try to parse /sys/kernel/debug/dri/*/v3d_ident for QPUs and Slices
++    // Returns total QPUs = Slices * QPUs-per-slice if detected, else 0.
++    for (int i = 0; i < 16; ++i) {
++        std::ostringstream path;
++        path << "/sys/kernel/debug/dri/" << i << "/v3d_ident";
++        std::ifstream f(path.str());
++        if (!f.good()) continue;
++        std::string line;
++        int slices = 0;
++        int qpus   = 0;
++        while (std::getline(f, line)) {
++            // Lines look like: "  Slices:       3" and "  QPUs:         12"
++            if (line.find("Slices:") != std::string::npos) {
++                std::istringstream iss(line);
++                std::string tmp;
++                while (iss >> tmp) {
++                    // last integer on the line
++                    try { slices = std::stoi(tmp); } catch (...) {}
++                }
++            } else if (line.find("QPUs:") != std::string::npos) {
++                std::istringstream iss(line);
++                std::string tmp;
++                while (iss >> tmp) {
++                    try { qpus = std::stoi(tmp); } catch (...) {}
++                }
++            }
++        }
++        if (slices > 0 && qpus > 0) {
++            // Heuristic: report total QPUs across all slices
++            return (uint32_t)(slices * qpus);
++        }
++    }
++    return 0;
++}
+ 
+ // remove this once it's more widely available in the SDK
+ #if !defined(VK_KHR_shader_bfloat16)
+@@ -2175,6 +2213,50 @@
+         l_mmq_wg_denoms = l_wg_denoms = {128, 128, 1 };
+         m_mmq_wg_denoms = m_wg_denoms = { 64,  64, 1 };
+         s_mmq_wg_denoms = s_wg_denoms = { 32,  32, 1 };
++        // Optional: environment override for lane shape (maps to specialization constant denominators)
++        if (const char * env_lsz = std::getenv("GGML_VK_LSZ")) {
++            // Accept forms like "16x16", "16x8", "32x8"
++            std::string s(env_lsz);
++            auto sep = s.find_first_of("xX");
++            if (sep != std::string::npos) {
++                unsigned lx = 0, ly = 0;
++                try { lx = (unsigned) std::stoul(s.substr(0, sep)); } catch (...) {}
++                try { ly = (unsigned) std::stoul(s.substr(sep+1)); } catch (...) {}
++                auto to_denom = [](unsigned v)->uint32_t {
++                    // Map common lane sizes to denominators used by our shaders
++                    // 16 -> 128, 32 -> 64, 64 -> 32. Otherwise keep previous.
++                    if (v == 16) return 128;
++                    if (v == 32) return 64;
++                    if (v == 64) return 32;
++                    return 0;
++                };
++                uint32_t dx = to_denom(lx);
++                uint32_t dy = to_denom(ly);
++                if (dx && dy) {
++                    s_wg_denoms = { dx, dy, 1 };
++                    m_wg_denoms = { dx, dy, 1 };
++                    l_wg_denoms = { dx, dy, 1 };
++                    // Keep mmq consistent with matmul
++                    s_mmq_wg_denoms = s_wg_denoms;
++                    m_mmq_wg_denoms = m_wg_denoms;
++                    l_mmq_wg_denoms = l_wg_denoms;
++                    GGML_LOG_DEBUG("%s: GGML_VK_LSZ=%ux%u -> wg_denoms=(%u,%u)\n", __func__, lx, ly, dx, dy);
++                }
++            }
++        }
++
++        // Broadcom V3D bias: prefer 16x16 lanes on low-SMEM devices (RPi 4/5)
++        if (device->properties.vendorID == 0x14e4 && device->properties.limits.maxComputeSharedMemorySize <= 16384) {
++            s_wg_denoms = { 128, 128, 1 };
++            m_wg_denoms = { 128, 128, 1 };
++            l_wg_denoms = { 128, 128, 1 };
++            // Keep mmq consistent with matmul lanes
++            s_mmq_wg_denoms = s_wg_denoms;
++            m_mmq_wg_denoms = m_wg_denoms;
++            l_mmq_wg_denoms = l_wg_denoms;
++            GGML_LOG_DEBUG("%s: Broadcom V3D detected -> biasing lanes to 16x16 via wg_denoms\n", __func__);
++        }
++
+         l_align = 128;
+         m_align =  64;
+         s_align =  32;
+@@ -3406,6 +3488,30 @@
+             device->shader_core_count = amd_shader_core_properties2_props.activeComputeUnitCount;
+         } else {
+             device->shader_core_count = 0;
++        // Optional seed for shader core count (QPU hint) for Broadcom V3D
++        // 1) Respect override via env var GGML_VK_SHADER_CORE_HINT (alias GGML_VK_QPU_HINT)
++        if (const char * env_qpu = std::getenv("GGML_VK_SHADER_CORE_HINT")) {
++            int v = std::atoi(env_qpu);
++            if (v > 0) {
++                device->shader_core_count = (uint32_t) v;
++                GGML_LOG_DEBUG("%s: using GGML_VK_SHADER_CORE_HINT=%d\n", __func__, v);
++            }
++        } else if (const char * env_qpu2 = std::getenv("GGML_VK_QPU_HINT")) {
++            int v = std::atoi(env_qpu2);
++            if (v > 0) {
++                device->shader_core_count = (uint32_t) v;
++                GGML_LOG_DEBUG("%s: using GGML_VK_QPU_HINT=%d\n", __func__, v);
++            }
++        }
++        // 2) If Broadcom V3D and still unknown, try debugfs probe
++        if (device->shader_core_count == 0 && device->properties.vendorID == 0x14e4) {
++            uint32_t qpus = ggml_vk_probe_v3d_qpus();
++            if (qpus > 0) {
++                device->shader_core_count = qpus;
++                GGML_LOG_DEBUG("%s: probed Broadcom V3D: shader_core_count=%u (from debugfs)\n", __func__, qpus);
++            }
++        }
++
+         }
+         device->float_controls_rte_fp16 = vk12_props.shaderRoundingModeRTEFloat16;
+ 
