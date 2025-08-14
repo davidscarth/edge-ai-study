@@ -315,7 +315,7 @@ Some hardware info:
 * Pi 5 (V3D 7.1): 3 slices, 12 QPUs, TMUs=3, no L3C, subgroup=16, SMEM=16 KiB.
 * Pi 4 (V3D 4.2): 2 slices, 8 QPUs, TMUs=2, no L3C, subgroup=16, SMEM=16 KiB.
 
-I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/edge-ai-study/tree/main/code/vk-autotune) to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage.
+I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/edge-ai-study/tree/main/code/vk-autotune) to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage. [Results](https://github.com/davidscarth/edge-ai-study/tree/main/code/benchmarks).
 
 ### Build llama.cpp
 ```shell
