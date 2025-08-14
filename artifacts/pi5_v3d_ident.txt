@@ -1,0 +1,13 @@
+admin@raspi5:~$ cat /sys/kernel/debug/dri/0/v3d_ident
+[sudo] password for admin:
+Revision:   7.1.10.16
+MMU:        yes
+TFU:        no
+MSO:        yes
+L3C:        no (0kb)
+Core 0:
+  Revision:     7.1
+  Slices:       3
+  TMUs:         3
+  QPUs:         12
+  Semaphores:   0
