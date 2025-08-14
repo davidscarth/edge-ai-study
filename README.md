@@ -1,7 +1,25 @@
 # edge-ai-study
 Feasibility Study of Edge AI on highly resource-constrained hardware.
 
+## Repository Structure
+
+* `TEST.md`: The primary, comprehensive runbook. This is the main document and the recommended starting point.
+* `/code`: Contains patches and programs.
+* `LICENSE-DOCS.md`: The Creative Commons Attribution 4.0 International License, which applies to all documentation (.md files).
+* `LICENSE-CODE.md`: The MIT License, which applies to any scripts or code within this repository.
+* `README.md`: You are here.
+
+## How to Use
+Begin by reading the main RUNBOOK.md.
+
+Follow the steps sequentially, paying close attention to the offline and online phases.
+
+## Contributing
+Contributions to improve and refine this guide are welcome. Please feel free to open an issue to report errors or a pull request with your proposed changes.
+
 ## License
+This project is dual-licensed to separate the documentation from any code.
+
 Unless otherwise noted, the documentation and written content of this project are licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
 
 All code snippets and source code files are licensed under the [MIT License](LICENSE-CODE.md).
