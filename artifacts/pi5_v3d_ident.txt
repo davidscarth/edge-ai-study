@@ -1,4 +1,4 @@
-admin@raspi5:~$ cat /sys/kernel/debug/dri/0/v3d_ident
+admin@raspi5:~$ sudo cat /sys/kernel/debug/dri/0/v3d_ident
 [sudo] password for admin:
 Revision:   7.1.10.16
 MMU:        yes
