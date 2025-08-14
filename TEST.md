@@ -315,7 +315,7 @@ Some hardware info:
 * Pi 5 (V3D 7.1): 3 slices, 12 QPUs, TMUs=3, no L3C, subgroup=16, SMEM=16 KiB. [v3d_ident](artifacts/pi5_v3d_ident.txt) [vulkaninfo](artifacts/VP_VULKANINFO_V3D_7_1_10_2_25_0_7.json)
 * Pi 4 (V3D 4.2): 2 slices, 8 QPUs, TMUs=2, no L3C, subgroup=16, SMEM=16 KiB. [v3d_ident](artifacts/pi4_v3d_ident.txt) [vulkaninfo](artifacts/VP_VULKANINFO_V3D_4_2_14_0_25_0_7.json)
 
-I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/edge-ai-study/tree/main/code/vk-autotune) to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage. I intend to make a cleaner patch and pick tile sizes from the resulting bench to hopefully gain some small performance, but I'm not sure why the uninteligible garbage happens. Driver issue?
+I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/edge-ai-study/tree/main/code/vk-autotune) to maybe help optimize that patch, but there are big problems still. Namely, the GPU seems to execute code, very slowly (slower than the CPU), and poorly, as the LLMs will spit out uninteligible garbage. I intend to make a cleaner patch and pick tile sizes from the resulting bench to hopefully gain some small performance, but I'm not sure why the uninteligible garbage happens. *To investigate.*
 
 #### Tuning
 [Benchmark Results](https://github.com/davidscarth/edge-ai-study/tree/main/code/benchmarks)
