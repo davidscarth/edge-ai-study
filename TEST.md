@@ -321,7 +321,7 @@ I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/e
 [Benchmark Results](https://github.com/davidscarth/edge-ai-study/tree/main/code/benchmarks)
 * Optimal Workgroup Shape: The (16,16) shape is the winner for performance. The question of the best "selector" is solved.
 * Optimal Tile Shape: For un-quantized models, the champion tile is 64x128 (TM=64, TN=128). The data clearly shows a performance peak at a tile height of TM=64 and that performance generally increases with tile width.
-* Performance Ceiling: ~0.43 GFLOP/s for un-quantized math.
+* Performance Ceiling: **~0.43 GFLOP/s** for un-quantized math. *(Ran same tests on Rpi4 8GB and got about ~0.21 GFLOP/s, and it preferred the same workgroup shape and tile size)*
 
 Conclusion: Use safe, square tiles (16x16, 32x32, 64x64).
 
