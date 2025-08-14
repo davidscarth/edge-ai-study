@@ -9,11 +9,12 @@ AT_MAX_RM=12 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi5_ext16k_lsz16x16.csv ./
 # shader-compiler=glslc
 # Preset=extended16k  lanes=16x16  candidates=53
 ```
+pi5_ext16k_lsz16x16.csv
 
 ```shell
 AT_MAX_RM=24 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi5_ext16k_lsz16x8.csv ./autotune --preset=extended16k --lsz=16x8 --enable-smem=1
 ```
-see pi5_ext16k_lsz16x16.csv, pi5_ext16k_lsz16x8.csv for results
+pi5_ext16k_lsz16x8.csv
 
 #### Raspberry Pi 4 (8GB)
 ```shell
@@ -23,11 +24,12 @@ AT_MAX_RM=12 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi4_ext16k_lsz16x16.csv ./
 # shader-compiler=glslc
 # Preset=extended16k  lanes=16x16  candidates=53
 ```
+pi4_ext16k_lsz16x16.csv
+
 ```shell
 AT_MAX_RM=24 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi4_ext16k_lsz16x8.csv ./autotune --preset=extended16k --lsz=16x8 --enable-smem=1
 ```
-
-see pi4_ext16k_lsz16x16.csv, pi4_ext16k_lsz16x8.csv for results
+pi4_ext16k_lsz16x8.csv
 
 #### Other
 I also have a couple of old proof of concept benchmarks in the "old" folder.
