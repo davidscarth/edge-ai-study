@@ -39,5 +39,5 @@ AT_MAX_RM=24 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi4_ext16k_lsz16x8.csv ./a
 ```
 pi4_ext16k_lsz16x8.csv
 
-#### Other
-I also have a couple of old proof of concept benchmarks in the "old" folder.
+#### Summary of results
+TBD
