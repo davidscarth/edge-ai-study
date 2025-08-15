@@ -45,3 +45,4 @@ AT_CSV=results.csv ./autotune --preset=classic --lsz=16x8,16x16,32x8
 ### Future for v2
 * Add some workload validation / verification
 * Update defaults to have better selections
+* Add a little CPU check option?
