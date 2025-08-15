@@ -20,6 +20,15 @@ AT_MAX_RM=24 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi5_ext16k_lsz16x8.csv ./a
 ```
 [pi5_ext16k_lsz16x8.csv](pi5_ext16k_lsz16x8.csv)
 
+```shell
+AT_MAX_RM=24 AT_MAX_RN=8 AT_WARM=1 AT_REP=10 AT_TIMEOUT_MS=1200000 AT_CSV=pi5_ext16k_lsz32x8.csv ./autotune --preset=extended16k --lsz=32x8 --enable-smem=1 --add-tiles=144x32,144x48,144x64,144x80,144x96,144x112,160x32,160x48,160x64,160x80,160x96,176x32,176x48,176x64,176x80,192x32,192x48,192x64
+# Device: V3D 7.1.10.2 (API 1.3)  driver=104857607
+# maxWGInvocations=256, maxSharedMemPerWG=16384 bytes, subgroupSize=16
+# shader-compiler=glslc
+# Preset=extended16k  lanes=32x8  candidates=53
+```
+[pi5_ext16k_lsz32x8.csv](pi5_ext16k_lsz32x8.csv)
+
 #### Raspberry Pi 4 (8GB)
 The Raspberry Pi 4 GPU is extremely slow. Configuring any workgroup size other than 16x16 will lead to frustration.
 
