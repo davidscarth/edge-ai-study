@@ -321,7 +321,7 @@ I'm running [a custom benchmark for tile sizes](https://github.com/davidscarth/e
 
 #### Tuning
 [Benchmark Results](https://github.com/davidscarth/edge-ai-study/tree/main/code/benchmarks)
-* Optimal Workgroup Shape: The (16,8) shape is generally the winner for performance.
+* Optimal Workgroup Shape: The (16,16) shape is generally the winner for performance.
 * Performance Ceiling: **~0.43 GFLOP/s** for un-quantized math. *(Ran same tests on Rpi4 8GB and got about ~0.21 GFLOP/s, and it preferred the same workgroup shape and tile size)*
 
 Conclusion: Use safe tiles that fit in 16KiB SMEM (i.e. 64x48x16, 32x32x16).
