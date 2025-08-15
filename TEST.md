@@ -25,16 +25,16 @@ The following build with a budget of approximately $200, purchased in-person at 
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v150
 
 ## Models
-A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added select Q4_0 and Q4_0 QAT models to see if there are any meaningful differences between Q4_K_M and Q4_0 on ARM.
+A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added select Q4_0 QAT models to see if there are any meaningful differences between Q4_K_M and Q4_0 on ARM.
 
 ### ~1B parameters (1GB size class)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB) | 1.1B | 2,048 | Apache 2.0 |
 | **[Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | August 2024 | Q4_K_M (806 MB)<br>Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-1b-it-qat-GGUF) (1.07 GB) | 1.5B | 8,192 | Gemma 3 |
-| **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q4_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
-| **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | January 2024 | Q4_K_M (668 MB)<br>Q4_0 (1.17 GB) | 1.1B | 2,048 | Apache 2.0 |
-| **[OLMo 2 1B](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF)** | May 2025 | Q4_K_M (936 MB) | 1.5B | 4,096 | Apache 2.0 |
 | **[Llama 3.2 1B Instruct](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF)** | July 2024 | Q4_K_M (808 MB) | 1.2B | 131,072 | Llama 3.2
+| **[OLMo 2 1B](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF)** | May 2025 | Q4_K_M (936 MB) | 1.5B | 4,096 | Apache 2.0 |
+| **[SmolLM-2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | October 2024 | Q4_K_M (1.06 GB)<br>Q4_0 (1.82 GB) | 1.7B | 8,192 | Apache 2.0 |
 
 ### ~3-4B parameters (2GB size class)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
@@ -126,9 +126,7 @@ dl() {
 dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it            Q4_K_M
 dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it-qat        Q4_0
 dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q4_K_M
-dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q4_0
 dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q4_K_M
-dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q4_0
 dl mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF   olmo-2-1b-it             Q4_K_M
 dl bartowski/Llama-3.2-1B-Instruct-GGUF           llama-3_1-1b-instruct    Q4_K_M
 
