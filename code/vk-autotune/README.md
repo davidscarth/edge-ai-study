@@ -41,3 +41,7 @@ AT_CSV=results.csv ./autotune --preset=classic --lsz=16x8,16x16,32x8
 - `AT_TIMEOUT_MS` (per-candidate timeout, default 600000)
 - `AT_CSV` (path to CSV output)
 - `AT_SMEM_FRAC` (0.5..1.0 safety factor on SMEM, default 1.0)
+
+### Future for v2
+* Add some workload validation / verification
+* Update defaults to have better selections
