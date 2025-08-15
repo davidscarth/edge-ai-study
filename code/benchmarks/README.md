@@ -1,5 +1,5 @@
 # benchmarks
-Here's a collection of Raspberry Pi benchmarks using [vk-autotune](vk-autotune) to examine the speed of different tile sizes
+Here's a collection of Raspberry Pi benchmarks using [vk-autotune](../vk-autotune) to examine the speed of different tile sizes
 
 #### Raspberry Pi 5 (16GB)
 ```shell
