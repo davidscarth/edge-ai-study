@@ -42,13 +42,15 @@ AT_MAX_RM=12 AT_MAX_RN=8 AT_TIMEOUT_MS=1200000 AT_CSV=pi4_ext16k_lsz16x16.csv ./
 [pi4_ext16k_lsz16x16.csv](pi4_ext16k_lsz16x16.csv)
 
 ```shell
-AT_MAX_RM=24 AT_MAX_RN=8 AT_WARM=1, AT_REP=1, AT_TIMEOUT_MS=7200000 AT_CSV=pi4_ext16k_lsz16x8.csv ./autotune --preset=extended16k --lsz=16x8 --enable-smem=1
+admin@raspi4:~/vk-autotune/build$ AT_MAX_RM=24 AT_MAX_RN=8 AT_WARM=1, AT_REP=1, AT_TIMEOUT_MS=7200000 AT_CSV=pi4_ext16k_lsz16x8.csv ./autotune --preset=extended16k --lsz=16x8 --enable-smem=1
 # Device: V3D 4.2.14.0 (API 1.3)  driver=104857607
 # maxWGInvocations=256, maxSharedMemPerWG=16384 bytes, subgroupSize=16
 # shader-compiler=glslc
 # Preset=extended16k  lanes=16x8  candidates=53
+[1/53] TM=64 TN=32 TK=16 lsz=(16,8) smem=1  ...
+  -> [TIMEOUT] after 7200000 ms (skipping result)
 ```
-pi4_ext16k_lsz16x8.csv
+16x8 ran too slowly, even when limited to 1 repetition and given a 2 hour timeout window. Stopped after first result.
 
 #### Summary of results
 TBD
