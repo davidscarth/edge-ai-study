@@ -309,7 +309,7 @@ If you simply build llama.cpp on a Raspberry Pi 5 with the -DGGML_VULKAN=ON flag
 > llama_model_load: error loading model: Shared memory size too small for matrix multiplication.
 > llama_model_load_from_file_impl: failed to load model
 
-We will attempt to patch ggml-vulkan to detect and configure low-smem devices ([vulkan-low-smem.patch](https://github.com/davidscarth/edge-ai-study/blob/main/code/vulkan-low-smem.patch), experimental).
+We will attempt to patch ggml-vulkan to detect and configure low-smem devices ([vulkan-low-smem-optimized.patch](https://github.com/davidscarth/edge-ai-study/blob/main/code/vulkan-low-smem-optimized.patch), experimental).
 
 tldr; it goes poorly.
 
