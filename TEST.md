@@ -44,7 +44,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Llama 3.2 3B Instruct](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)**| November 2024 | Q4_K_M (2.02 GB) | 3.1B | 131,072 | Llama 3.2 |
 | **[Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)**| October 2024 | Q4_K_M (2.49 GB) | 4.2B | 131,072 | MIT |
 | **[Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)**| October 2024 | Q4_K_M (2.49 GB) | 4.2B | 131,072 | MIT |
-| **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB), Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-4b-it-qat-GGUF) (2.37 GB) | 4.3B | 131,072 | Gemma 3 |
+| **[Gemma 3 4B IT](https://huggingface.co/bartowski/google_gemma-3-4b-it-GGUF)** | March 2025 | Q4_K_M (2.49 GB)<br>Q4_0 [QAT](https://huggingface.co/bartowski/google_gemma-3-4b-it-qat-GGUF) (2.37 GB) | 4.3B | 131,072 | Gemma 3 |
 | **[Gemma 3N E2B IT](https://huggingface.co/bartowski/google_gemma-3n-E2B-it-GGUF)** | November 2024 | Q4_K_M (2.79 GB) | 2.2B | 8,192 | Gemma 3 |
 
 ### ~7-8B parameters (4GB size class, aka "will it run?")
