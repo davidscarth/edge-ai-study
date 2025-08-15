@@ -128,7 +128,7 @@ dl bartowski/google_gemma-3-1b-it-GGUF            gemma-3-1b-it-qat        Q4_0
 dl bartowski/SmolLM2-1.7B-Instruct-GGUF           smollm2-1_7b             Q4_K_M
 dl mradermacher/TinyLlama_v1.1-GGUF               tinyllama-v1_1           Q4_K_M
 dl mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF   olmo-2-1b-it             Q4_K_M
-dl bartowski/Llama-3.2-1B-Instruct-GGUF           llama-3_1-1b-instruct    Q4_K_M
+dl bartowski/Llama-3.2-1B-Instruct-GGUF           llama-3_2-1b-instruct    Q4_K_M
 
 # 2GB class
 dl bartowski/HuggingFaceTB_SmolLM3-3B-GGUF        smollm3-3b               Q4_K_M
