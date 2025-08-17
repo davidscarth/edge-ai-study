@@ -331,7 +331,8 @@ Conclusion: Use safe tiles that fit in 16KiB SMEM. So far Pi 5 GPU looks like it
 # Configure (Release build, use OpenBLAS and Vulkan)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
   -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
-  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF
+  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
+  -DGGML_VULKAN_RPI=ON # on my own personal build...
 # Compile (Pi 5 has 4 cores; -j4 is sensible)
 cmake --build build -j4
 ```
