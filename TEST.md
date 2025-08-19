@@ -334,13 +334,31 @@ Conclusion: Use safe tiles that fit in 16KiB SMEM. So far Pi 5 GPU looks like it
 
 ### Build llama.cpp
 ```shell
-# Configure (Release build, use OpenBLAS and Vulkan)
-cmake -B build -DCMAKE_BUILD_TYPE=Release \
+# Configure (Release build, use OpenBLAS and Vulkan) (Debug mode cause this thing is crashy)
+cmake -B build -DCMAKE_BUILD_TYPE=Debug \
   -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
-  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
+  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF
 # Compile (Pi 5 has 4 cores; -j4 is sensible)
 cmake --build build -j4
 ```
+#### Troubleshooting
+List Recent Dumps: Open your terminal and run this command to see a list of all captured core dumps, with the most recent one at the bottom.
+```shell
+coredumpctl list
+```
+Extract the Dump File: To get the actual core dump file from the most recent crash, run the following command. This will save the dump to a file named program.coredump in your current directory.
+
+```shell
+coredumpctl dump -o program.coredump
+```
+Debug with GDB: Now you can use a debugger like GDB to analyze the crash. Load your program's executable and the core dump file together.
+
+```shell
+gdb /path/to/your/executable program.coredump
+```
+Once inside GDB, you can use the command bt (backtrace) to see the function call stack at the moment of the crash.
+
+
 
 ## Future
 Possibly explore attaching an external graphics card? Maybe a cheapo one?
