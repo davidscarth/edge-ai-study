@@ -147,6 +147,12 @@ dl bartowski/Ministral-8B-Instruct-2410-GGUF      ministral-8b-instruct    IQ3_X
 
 echo "All done. Stored under: ${BASE}"
 ```
+### Test out a model
+```shell
+./build/bin/llama-cli -m ~/models/gemma-3-1b-it-qat/Q4_0/google_gemma-3-1b-it-qat-Q4_0.gguf -t 4 -ngl 0 -co -p "Hello!"
+
+VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_LOADER_DEBUG=all ./build/bin/llama-cli -m ~/models/gemma-3-1b-it-qat/Q4_0/google_gemma-3-1b-it-qat-Q4_0.gguf -t 4 -ngl 1 -co -p "Hello!"
+```
 ### Build llama-swap
 ```shell
 sudo apt update
@@ -332,7 +338,6 @@ Conclusion: Use safe tiles that fit in 16KiB SMEM. So far Pi 5 GPU looks like it
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
   -DGGML_VULKAN=ON -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS \
   -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
-  -DGGML_VULKAN_RPI=ON # on my own personal build...
 # Compile (Pi 5 has 4 cores; -j4 is sensible)
 cmake --build build -j4
 ```
