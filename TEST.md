@@ -358,7 +358,11 @@ gdb /path/to/your/executable program.coredump
 ```
 Once inside GDB, you can use the command bt (backtrace) to see the function call stack at the moment of the crash.
 
-
+#### Useful commands
+to see what the GPU is up to
+```shell
+watch -n0.5 'vcgencmd measure_clock core; vcgencmd measure_temp; vcgencmd get_throttled'
+```
 
 ## Future
 Possibly explore attaching an external graphics card? Maybe a cheapo one?
