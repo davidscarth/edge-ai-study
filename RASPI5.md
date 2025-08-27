@@ -1,4 +1,4 @@
-# edge-ai-study
+# AI on the Raspberry Pi 5
 Version 0.1-dev<br>
 8/14/2025
 
