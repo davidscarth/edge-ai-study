@@ -28,9 +28,10 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 > 
 > This is an incoherent collection of things, I intend to make it like a runbook
 > 
-* Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using Rufus.
+* Downloaded JetPack 6.2.1 and extracted "sd-blob.img".
+* Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using Rufus. Selected "sd-blob.img" and clicked START.
 
-The boot fails. You need to edit /boot/extlinux/extlinux.conf as follows:
+The boot will fail 5-6 seconds in. You need to edit /boot/extlinux/extlinux.conf as follows:
 
 Original (line 10):
 ```shell
