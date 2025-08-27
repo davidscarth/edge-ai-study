@@ -15,7 +15,9 @@ The following build with a budget of approximately $300
 * [Jetson Orin Nano Super](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) ($249.00 from Amazon)
 * [Crucial P310 500GB NVMe M.2 SSD](https://www.raspberrypi.com/products/ssd-kit/) ($45.99 from Amazon)
 
-As of 8/2025, the 
+As of 8/2025, the Orin Nano Super comes with firmware 36.4.3-gcid-38968081. It has "MAXN_SUPER" mode available out of the box and is compatible with JetPack 6.2 without needing to update the firmware.
+
+Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36.4.4 and need a couple of reboots.
 
 ## Software
 * [Nvidia JetPack]([https://ubuntu.com/download/raspberry-pi](https://developer.nvidia.com/embedded/jetpack-sdk-621)) 6.2.1
