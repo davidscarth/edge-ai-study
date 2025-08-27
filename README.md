@@ -8,7 +8,8 @@ Testing Hardware:
 
 ## Repository Structure
 
-* `TEST.md`: The primary, comprehensive runbook. This is the main document and the recommended starting point.
+* `RASPI5.md`: Experiments on the Raspberry Pi 5. This is the main document at the moment.
+* `ORIN.md`: Experiments on the Nvidia Jetson Orin Nano Super. In progress.
 * `/code`: Contains patches and programs.
 * `LICENSE-DOCS.md`: The Creative Commons Attribution 4.0 International License, which applies to all documentation (.md files).
 * `LICENSE-CODE.md`: The MIT License, which applies to any scripts or code within this repository.
