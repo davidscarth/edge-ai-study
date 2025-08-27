@@ -1,5 +1,5 @@
 # edge-ai-study
-Feasibility Study of Edge AI on highly resource-constrained hardware.
+Feasibility Study of Edge AI on resource-constrained hardware.
 
 Testing Hardware:
 * Raspberry Pi 5 (16GB)
@@ -16,7 +16,7 @@ Testing Hardware:
 * `README.md`: You are here.
 
 ## How to Use
-Begin by reading the main TEST.md.
+Begin by reading RASPI5.md or ORIN.md.
 
 Any research will be noted in there.
 
