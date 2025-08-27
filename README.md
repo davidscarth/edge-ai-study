@@ -1,6 +1,11 @@
 # edge-ai-study
 Feasibility Study of Edge AI on highly resource-constrained hardware.
 
+Testing Hardware:
+* Raspberry Pi 5 (16GB)
+* Raspberry Pi 4 (8GB)
+* Nvidia Jetson Orin Nano Super
+
 ## Repository Structure
 
 * `TEST.md`: The primary, comprehensive runbook. This is the main document and the recommended starting point.
