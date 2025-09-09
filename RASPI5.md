@@ -19,7 +19,7 @@ The following build with a budget of approximately $200
 * [Raspberry Pi 45W Power Supply](https://www.microcenter.com/product/692335/raspberry-pi-45w-usb-c-power-supply) ($15), [Active Cooler](https://www.raspberrypi.com/products/active-cooler/) ($10), and [Bumper](https://www.raspberrypi.com/products/bumper/) ($4)
 
 ## Software
-* [Ubuntu](https://ubuntu.com/download/raspberry-pi) 24.04.3 LTS (64-bit)
+* [Ubuntu](https://ubuntu.com/download/raspberry-pi) 24.04.3 LTS (HWE) (64-bit)
 * [llama.cpp](https://github.com/ggml-org/llama.cpp) b6139
 * [Open WebUI](https://github.com/open-webui/open-webui) v0.6.22
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v150
@@ -75,6 +75,10 @@ sudo apt install -y git build-essential cmake pkg-config \
                     libvulkan-dev glslang-tools spirv-tools vulkan-tools glslc\
                     libopenblas-dev python3-venv python3-pip curl \
                     libcurl4-openssl-dev
+```
+### Enable HWE (Hardware Enablement) stack
+```shell
+sudo apt-get install --install-recommends linux-generic-hwe-24.04
 ```
 ### Build llama.cpp
 ```shell
