@@ -76,10 +76,6 @@ sudo apt install -y git build-essential cmake pkg-config \
                     libopenblas-dev python3-venv python3-pip curl \
                     libcurl4-openssl-dev
 ```
-### Enable HWE (Hardware Enablement) stack
-```shell
-sudo apt-get install --install-recommends linux-generic-hwe-24.04
-```
 ### Build llama.cpp
 ```shell
 cd ~
