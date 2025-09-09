@@ -17,8 +17,8 @@ Compute
   * (So [256,1,1], [16,16,1], [8,8,4], etc. are legal.)
 
 Buffer & Memory
-* maxUniformBufferRange: 1 GiB
-* maxStorageBufferRange: 1 GiB
+* maxUniformBufferRange: 1 GiB (max size for a Uniform Buffer Object (UBO))
+* maxStorageBufferRange: 1 GiB (maximum size for a Shader Storage Buffer Object (SSBO))
 * maxPushConstantsSize: 128 bytes
   * Small compared to discrete GPUs (often 256–512 B+). Use UBOs/SSBOs for larger data.
 
