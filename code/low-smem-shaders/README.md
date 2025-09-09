@@ -2,7 +2,9 @@
 
 Here are some experimental GLSL shaders which respect the hardware limitations of Raspberry Pi or similar devices
 
-Vulkan 1.0 compliant. Compile with glslc or similar.
+Should be Vulkan 1.0 safe. Compile with glslc or similar.
+
+They may not work at all, YMMV
 
 #### General Hardware Constraints and Limits:
 
