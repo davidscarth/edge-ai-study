@@ -332,6 +332,8 @@ I'm ran [a custom benchmark for tile sizes](https://github.com/davidscarth/edge-
 
 Conclusion: Use safe tiles that fit in 16KiB SMEM. So far Pi 5 GPU looks like it may help if we can get past some bugs. Pi 4 should stick to CPU-only.
 
+Possible the benchmark is woefully inaccurate, unoptimized, who knows.
+
 ### Build llama.cpp
 ```shell
 # Configure (Release build, use OpenBLAS and Vulkan) (Debug mode cause this thing is crashy)
