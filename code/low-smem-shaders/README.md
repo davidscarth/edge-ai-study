@@ -4,7 +4,7 @@ Compile with glslc or similar
 
 General Constraints and Limits:
 
-Hardware 
+GPU
 * No cooperative matrices
 * No FP16/INT8 arithmetic or storage
 * No integer dot product
