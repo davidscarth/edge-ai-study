@@ -1,6 +1,6 @@
 # low-smem-shaders
 
-Here are some experimental GLSL shaders which respect the hardware limitations of Raspberry Pi or similar devices
+Here are some experimental GLSL shaders which respect the hardware limitations of Raspberry Pi 5 or similar devices
 
 Should be Vulkan 1.0 safe. Compile with glslc or similar.
 
