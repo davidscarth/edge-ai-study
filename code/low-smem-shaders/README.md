@@ -1,4 +1,6 @@
-Experimental shaders to respect the hardware limitations of Raspberry Pi or similar devices
+Experimental GLSL shaders to respect the hardware limitations of Raspberry Pi or similar devices
+
+Compile with glslc or similar
 
 Hardware Constraints:
 * No cooperative matrices
