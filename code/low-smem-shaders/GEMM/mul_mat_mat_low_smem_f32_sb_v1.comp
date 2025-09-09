@@ -1,0 +1,177 @@
+#version 450
+// LOW_SMEM F32 GEMM - C = A(MxK) * B(KxN)  [row-major, fp32 everywhere]
+// Works on devices with ≥16 KiB shared memory and ≤256 threads per workgroup.
+// Hard limits respected: no fp16 / no int8 / no integer dot product / no matrix cores.
+// SSBO max range: host must ensure buffers/offsets fit in 128 MiB.
+//
+// All offsets and leading dimensions (lda/ldb/ldc) are in ELEMENTS (not bytes).
+//   off_a_e, off_b_e, off_c_e: base element offsets into corresponding buffers
+//   lda, ldb, ldc: leading dimensions (row stride in elements)
+//   M, N, K: matrix sizes
+//
+// Thread mapping:
+//   - Workgroup computes one C tile of size TILE_M x TILE_N (default 64x64).
+//   - local_size = (WG_X, WG_Y) = (16, 16) ⇒ 256 threads.
+//   - Each thread computes a micro-tile of TM x TN (default 4x4) in registers.
+//   - K is iterated in chunks of TILE_K (default 16) with single-buffered SMEM.
+//
+// Shared memory budget (defaults):
+//   TILE_M*TILE_K + TILE_K*TILE_N = 64*16 + 16*64 = 2048 floats = 8192 bytes < 16 KiB.
+//   Padding is small; total < 9 KiB.
+//
+// Notes:
+// - Row-major: A[row, col] = a[row*lda + col]; B[row, col] = b[row*ldb + col];
+//   C[row, col] = c[row*ldc + col].
+// - Bounds-safe for arbitrary M,N,K.
+// - WG size ≤256 per the hard limit.
+// - Optional vec4 SMEM staging can be added later; this scalar path is portable and fast enough.
+
+// === Specialization constants ===
+layout (constant_id = 0) const uint TYPE_ID = 0u;   // Always 0 for F32
+layout (constant_id = 1) const uint TILE_M  = 64u;  // rows of C tile per WG
+layout (constant_id = 2) const uint TILE_N  = 64u;  // cols of C tile per WG
+layout (constant_id = 3) const uint TILE_K  = 16u;  // K chunk per iteration
+layout (constant_id = 4) const uint TM      = 4u;   // rows per thread (micro-tile)
+layout (constant_id = 5) const uint TN      = 4u;   // cols per thread (micro-tile)
+layout (constant_id = 6) const uint PAD_A   = 2u;   // small padding to reduce bank conflicts
+layout (constant_id = 7) const uint PAD_B   = 2u;   // small padding to reduce bank conflicts
+
+// === Workgroup size (≤256) ===
+layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in; // 16*16=256
+
+// === SSBO bindings === (match the existing convention where possible)
+layout(std430, binding=0) readonly  buffer A_f32 { float a[]; };
+layout(std430, binding=2) readonly  buffer B_f32 { float b[]; };
+layout(std430, binding=3) writeonly buffer C_f32 { float c[]; };
+
+// === Push constants === (ELEMENT-based)
+layout(push_constant) uniform PC {
+    uint M, N, K;                  // dims
+    uint lda, ldb, ldc;            // leading dims (row stride) in elements
+    uint off_a_e, off_b_e, off_c_e;// base offsets (elements)
+} pc;
+
+// === Shared memory tiles ===
+shared float As[TILE_M][TILE_K + PAD_A];
+shared float Bs[TILE_K][TILE_N + PAD_B];
+
+// Helper: ceil_div
+uint ceil_div(uint x, uint y) { return (x + y - 1u) / y; }
+
+void main() {
+    // Tile coordinates in C
+    const uint tileCol = gl_WorkGroupID.x * TILE_N; // N dimension
+    const uint tileRow = gl_WorkGroupID.y * TILE_M; // M dimension
+
+    // Thread coordinates within WG
+    const uint lx = gl_LocalInvocationID.x; // [0, 15]
+    const uint ly = gl_LocalInvocationID.y; // [0, 15]
+
+    // Micro-tile origin within the tile
+    const uint row0 = ly * TM;  // 0..60
+    const uint col0 = lx * TN;  // 0..60
+
+    // Registers to accumulate C micro-tile (TM x TN)
+    float acc[TM][TN];
+    for (uint i = 0u; i < TM; ++i)
+        for (uint j = 0u; j < TN; ++j)
+            acc[i][j] = 0.0;
+
+    // Iterate K in chunks
+    for (uint k0 = 0u; k0 < pc.K; k0 += TILE_K) {
+        const uint kChunk = min(TILE_K, pc.K - k0);
+
+        // Load A and B tiles into shared memory (bounds-safe & zero-pad)
+        // Stage A: TILE_M x kChunk
+        for (uint i = ly; i < TILE_M; i += gl_WorkGroupSize.y) {
+            const uint gRow = tileRow + i; // row in A
+            const uint aBase = pc.off_a_e + gRow * pc.lda + k0; // A[gRow, k0]
+            for (uint kk = lx; kk < kChunk; kk += gl_WorkGroupSize.x) {
+                float val = 0.0;
+                if (gRow < pc.M && (k0 + kk) < pc.K) {
+                    val = a[aBase + kk];
+                }
+                As[i][kk] = val;
+            }
+            // zero out pad lane for bank-friendly access (optional)
+            if (lx == 0u && PAD_A > 0u) {
+                for (uint p = 0u; p < PAD_A; ++p) As[i][kChunk + p] = 0.0;
+            }
+        }
+
+        // Stage B: kChunk x TILE_N
+        for (uint kk = ly; kk < kChunk; kk += gl_WorkGroupSize.y) {
+            const uint gK = k0 + kk; // row in B
+            const uint bBase = pc.off_b_e + gK * pc.ldb + tileCol; // B[gK, tileCol]
+            for (uint j = lx; j < TILE_N; j += gl_WorkGroupSize.x) {
+                float val = 0.0;
+                if (gK < pc.K && (tileCol + j) < pc.N) {
+                    val = b[bBase + j];
+                }
+                Bs[kk][j] = val;
+            }
+            if (lx == 0u && PAD_B > 0u) {
+                for (uint p = 0u; p < PAD_B; ++p) Bs[kk][TILE_N + p] = 0.0;
+            }
+        }
+
+        barrier(); // ensure As/Bs are visible
+
+        // Compute on the staged tiles
+        for (uint kk = 0u; kk < kChunk; ++kk) {
+            // Load a TM-vector from As and a TN-vector from Bs for this thread's microtile
+            float aReg[TM];
+            float bReg[TN];
+
+            // Gather A rows for our TM outputs
+            for (uint i = 0u; i < TM; ++i) {
+                const uint r = row0 + i;
+                aReg[i] = (r < TILE_M) ? As[r][kk] : 0.0;
+            }
+            // Gather B cols for our TN outputs
+            for (uint j = 0u; j < TN; ++j) {
+                const uint c = col0 + j;
+                bReg[j] = (c < TILE_N) ? Bs[kk][c] : 0.0;
+            }
+
+            // FMA into registers
+            for (uint i = 0u; i < TM; ++i) {
+                for (uint j = 0u; j < TN; ++j) {
+                    acc[i][j] += aReg[i] * bReg[j];
+                }
+            }
+        }
+
+        barrier(); // free As/Bs for next kChunk
+    }
+
+    // Write back the TM x TN micro-tile to C (bounds-safe)
+    for (uint i = 0u; i < TM; ++i) {
+        const uint gRow = tileRow + row0 + i;
+        if (gRow >= pc.M) break;
+        const uint cBase = pc.off_c_e + gRow * pc.ldc + tileCol + col0;
+        for (uint j = 0u; j < TN; ++j) {
+            const uint gCol = tileCol + col0 + j;
+            if (gCol < pc.N) {
+                c[cBase + j] = acc[i][j];
+            }
+        }
+    }
+}
+
+// === Host launch recipe ===
+// grid.x = ceil_div(N, TILE_N)
+// grid.y = ceil_div(M, TILE_M)
+// grid.z = 1
+// local_size = (16, 16, 1)
+// Push constants:
+//   M, N, K, lda, ldb, ldc, off_a_e, off_b_e, off_c_e
+// SSBO bindings:
+//   binding=0: A (float[])  size ≥ off_a_e + M*lda
+//   binding=2: B (float[])  size ≥ off_b_e + K*ldb
+//   binding=3: C (float[])  size ≥ off_c_e + M*ldc
+//
+// Tuning notes:
+//   - TILE_K can be raised to 32 if you keep single-buffered SMEM (64*32 + 32*64 = 4096 floats = 16 KiB; leave PAD=0).
+//   - For devices with slower SMEM, try TM=TN=2 (more threads, smaller register file pressure).
+//   - To add 128-bit global loads, alias A/B as vec4 buffers and stage in 4-wide loops when (lda,ldb,off) are 4-aligned.

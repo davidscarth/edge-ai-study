@@ -1,0 +1,234 @@
+#version 450
+// =============================
+// QUANTIZED GEMM (K/IQ family)
+// =============================
+// C = A_q(MxK) * B(KxN) with A_q in K-quants (Q2_K..Q6_K) or IQ*
+// Decodes A on-the-fly into shared memory (FP32), then performs FP32 GEMM.
+// Respects: no fp16/int8, no integer dot, no matrix cores; ≤16 KiB SMEM; ≤256 threads/WG.
+// Matches your GEMV bindings & metadata: qs@1, sc@4, mn@5, lut@6, lut_off@7.
+
+#version 450
+
+// === Tiling params (specialization constants) ===
+layout (constant_id = 0) const uint TYPE_ID = 0u;   // 0..4: K-quants; ≥5: IQ*
+layout (constant_id = 1) const uint TILE_M  = 64u;
+layout (constant_id = 2) const uint TILE_N  = 64u;
+layout (constant_id = 3) const uint TILE_K  = 16u;   // keep 16 to fit <16 KiB SMEM
+layout (constant_id = 4) const uint TM      = 4u;    // micro-tile rows per thread
+layout (constant_id = 5) const uint TN      = 4u;    // micro-tile cols per thread
+layout (constant_id = 6) const uint PAD_A   = 2u;    // small padding to avoid bank conflicts
+layout (constant_id = 7) const uint PAD_B   = 2u;
+
+// === Workgroup: 16x16 = 256 threads ===
+layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+// === SSBOs ===
+layout(std430, binding=1) readonly  buffer Q_codes { uint qs[]; };          // quantized A codes (uint32 words)
+layout(std430, binding=2) readonly  buffer B_f32   { float b[]; };           // dense B (fp32)
+layout(std430, binding=3) writeonly buffer C_f32   { float c[]; };           // output C (fp32)
+layout(std430, binding=4) readonly  buffer Scales  { float sc[]; };          // per-(sub)block scales
+layout(std430, binding=5) readonly  buffer Mins    { float mn[]; };          // per-(sub)block mins / zero-points
+layout(std430, binding=6) readonly  buffer IQ_LUT  { float lut[]; };         // IQ codebook (dequantized values)
+layout(std430, binding=7) readonly  buffer IQ_LUT_Offsets { uint lut_off[]; };// per-block LUT base indices
+
+// === Push constants (ELEMENT-based offsets) ===
+layout(push_constant) uniform PC {
+    uint M, N, K;                 // dims
+    uint ldb, ldc;                // B,C leading dims (row stride in elements)
+    uint off_q_e;                 // base *word* offset into qs[] (uints)
+    uint off_s_e, off_mn_e;       // base offsets into sc[], mn[] (floats)
+    uint off_b_e, off_c_e;        // base offsets into b[], c[] (floats)
+    uint block_sz_q;              // bytes of *payload* per 256-block for TYPE_ID (K/IQ)
+    uint blocks_per_row;          // number of 256-blocks along K per row of A
+} pc;
+
+// === Shared memory tiles (fp32) ===
+shared float As[TILE_M][TILE_K + PAD_A];
+shared float Bs[TILE_K][TILE_N + PAD_B];
+
+// === Helpers ===
+uint ceil_div(uint x, uint y) { return (x + y - 1u) / y; }
+
+// Read next qs word safely (returns 0 if idx >= end)
+uint qs_load(uint idx, uint end_idx) { return (idx < end_idx) ? qs[idx] : 0u; }
+
+// K-quant super-block (matches your GEMV)
+#define QK_K 256u
+#define K_SCALE_SIZE 12u
+
+// Extract up to 6 bits starting at bit offset from a two-word window
+uint bits_u(uint w0, uint w1, uint bit_off, uint bits) {
+    uint sh = bit_off & 31u;
+    uint mask = (1u << bits) - 1u;
+    uint lo = (w0 >> sh);
+    if (sh + bits <= 32u) return lo & mask;
+    uint hi = (w1 & ((1u << ((sh + bits) - 32u)) - 1u)) << (32u - sh);
+    return (lo | hi) & mask;
+}
+
+// Map element-in-256-block → sub-scale index for K-quants (12 groups)
+uint k_sub_index_for_elem(const uint type_id, const uint elem_in_block) {
+    // Same simple 12-way partitioning used in your GEMV (temporary uniform mapping)
+    if (type_id <= 4u) {
+        // 256 elements → 12 groups of ≈21-22 elems
+        uint idx = (elem_in_block * 12u) / 256u;
+        return (idx < 12u) ? idx : 11u;
+    }
+    return 0u;
+}
+
+uint iq_bits(uint type_id) {
+    // Default IQ code width; change mapping if you have IQ2/3/8 variants
+    return 4u; // e.g., IQ4*
+}
+
+struct BlockMeta {
+    float scale;
+    float minv;
+    uint  qs_base;   // base word index in qs[] for this 256-block
+    uint  qs_end;    // end word index (exclusive)
+    uint  bits;      // bits per code
+    float zero_point;// mid-point for K-quants (e.g., 1<<(bits-1))
+};
+
+void load_block_meta(uint type_id, uint block_idx, uint elem_in_block, out BlockMeta meta) {
+    meta.qs_base = pc.off_q_e + block_idx * (pc.block_sz_q >> 2u);
+    meta.qs_end  = meta.qs_base + (pc.block_sz_q >> 2u);
+
+    // Bits table for K-quants; IQ treated specially
+    uint b = 0u;
+    if (type_id == 0u) b = 4u;   // Q4_K
+    else if (type_id == 1u) b = 5u; // Q5_K
+    else if (type_id == 2u) b = 6u; // Q6_K
+    else if (type_id == 3u) b = 2u; // Q2_K
+    else if (type_id == 4u) b = 3u; // Q3_K
+    meta.bits = (type_id <= 4u) ? b : 0u;
+
+    if (type_id >= 5u) {
+        // IQ: LUT yields dequantized values; no per-sub scale/min
+        meta.bits = iq_bits(type_id);
+        meta.scale = 1.0; // If your IQ LUT is normalized, you can supply per-block scale in sc[] and use it below
+        meta.minv  = 0.0;
+        meta.zero_point = 0.0;
+    } else {
+        uint sub = k_sub_index_for_elem(type_id, elem_in_block);
+        meta.scale = sc[pc.off_s_e  + block_idx * K_SCALE_SIZE + sub];
+        meta.minv  = mn[pc.off_mn_e + block_idx * K_SCALE_SIZE + sub];
+        meta.zero_point = float(1u << (meta.bits - 1u));
+    }
+}
+
+void main() {
+    const uint tileCol = gl_WorkGroupID.x * TILE_N;
+    const uint tileRow = gl_WorkGroupID.y * TILE_M;
+
+    const uint lx = gl_LocalInvocationID.x; // 0..15
+    const uint ly = gl_LocalInvocationID.y; // 0..15
+
+    const uint row0 = ly * TM;
+    const uint col0 = lx * TN;
+
+    float acc[TM][TN];
+    for (uint i=0u;i<TM;++i) for (uint j=0u;j<TN;++j) acc[i][j] = 0.0;
+
+    for (uint k0 = 0u; k0 < pc.K; k0 += TILE_K) {
+        const uint kChunk = min(TILE_K, pc.K - k0);
+
+        // ---- Stage A: decode quantized A tile → As (fp32) ----
+        for (uint i = ly; i < TILE_M; i += gl_WorkGroupSize.y) {
+            const uint gRow = tileRow + i;
+            const bool row_ok = (gRow < pc.M);
+            for (uint kk = lx; kk < kChunk; kk += gl_WorkGroupSize.x) {
+                float aval = 0.0;
+                if (row_ok) {
+                    const uint gK   = k0 + kk;
+                    const uint kblk = gK >> 8;                    // 256-wide block index along K
+                    const uint eib  = gK & 255u;                  // elem-in-block
+                    const uint blk  = gRow * pc.blocks_per_row + kblk;
+
+                    BlockMeta meta; load_block_meta(TYPE_ID, blk, eib, meta);
+
+                    if (TYPE_ID >= 5u) {
+                        // IQ family: codes index into per-block LUT of *dequantized* floats
+                        const uint bit_base = eib * 4u; // typical IQ4*; if bits vary, use meta.bits
+                        const uint widx = meta.qs_base + (bit_base >> 5u);
+                        const uint w0 = qs[widx];
+                        const uint w1 = qs_load(widx + 1u, meta.qs_end);
+                        const uint q  = bits_u(w0, w1, bit_base & 31u, (meta.bits==0u?4u:meta.bits));
+                        const uint lbase = lut_off[blk];
+                        aval = lut[lbase + q]; // If LUT normalized, change to meta.scale * lut[...] 
+                    } else {
+                        const uint bit_base = eib * meta.bits;
+                        const uint widx = meta.qs_base + (bit_base >> 5u);
+                        const uint w0 = qs[widx];
+                        const uint w1 = qs_load(widx + 1u, meta.qs_end);
+                        const uint q  = bits_u(w0, w1, bit_base & 31u, meta.bits);
+                        aval = meta.scale * (float(q) - meta.zero_point) + meta.minv;
+                    }
+                }
+                As[i][kk] = aval;
+            }
+            if (lx == 0u && PAD_A > 0u) {
+                for (uint p=0u; p<PAD_A; ++p) As[i][kChunk + p] = 0.0;
+            }
+        }
+
+        // ---- Stage B: dense B tile → Bs ----
+        for (uint kk = ly; kk < kChunk; kk += gl_WorkGroupSize.y) {
+            const uint gK = k0 + kk;
+            for (uint j = lx; j < TILE_N; j += gl_WorkGroupSize.x) {
+                float bv = 0.0;
+                const uint gCol = tileCol + j;
+                if (gK < pc.K && gCol < pc.N) {
+                    bv = b[pc.off_b_e + gK * pc.ldb + gCol];
+                }
+                Bs[kk][j] = bv;
+            }
+            if (lx == 0u && PAD_B > 0u) {
+                for (uint p=0u; p<PAD_B; ++p) Bs[kk][TILE_N + p] = 0.0;
+            }
+        }
+
+        barrier();
+
+        // ---- Compute micro-tiles ----
+        for (uint kk=0u; kk<kChunk; ++kk) {
+            float aReg[TM];
+            float bReg[TN];
+            for (uint i=0u;i<TM;++i) {
+                const uint r = row0 + i;
+                aReg[i] = (r < TILE_M) ? As[r][kk] : 0.0;
+            }
+            for (uint j=0u;j<TN;++j) {
+                const uint ccol = col0 + j;
+                bReg[j] = (ccol < TILE_N) ? Bs[kk][ccol] : 0.0;
+            }
+            for (uint i=0u;i<TM;++i) {
+                for (uint j=0u;j<TN;++j) {
+                    acc[i][j] += aReg[i] * bReg[j];
+                }
+            }
+        }
+
+        barrier();
+    }
+
+    // ---- Store ----
+    for (uint i=0u;i<TM;++i) {
+        const uint gRow = tileRow + row0 + i;
+        if (gRow >= pc.M) break;
+        const uint cBase = pc.off_c_e + gRow * pc.ldc + tileCol + col0;
+        for (uint j=0u;j<TN;++j) {
+            const uint gCol = tileCol + col0 + j;
+            if (gCol < pc.N) c[cBase + j] = acc[i][j];
+        }
+    }
+}
+
+// Host grid:
+// grid.x = ceil_div(N, TILE_N)
+// grid.y = ceil_div(M, TILE_M)
+// local_size = (16,16,1)
+// Push constants:
+//   M,N,K, ldb,ldc, off_q_e, off_s_e, off_mn_e, off_b_e, off_c_e, block_sz_q, blocks_per_row
+// Bindings: qs@1, B@2, C@3, sc@4, mn@5, lut@6, lut_off@7

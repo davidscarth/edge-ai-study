@@ -1,0 +1,105 @@
+#version 450
+// F32 GEMM - double-buffer + vec4 loads
+layout (constant_id = 1) const uint TILE_M  = 64u;
+layout (constant_id = 2) const uint TILE_N  = 64u;
+layout (constant_id = 3) const uint TILE_K  = 16u;
+layout (constant_id = 4) const uint TM      = 4u;
+layout (constant_id = 5) const uint TN      = 4u;
+const uint PAD_A = 0u; const uint PAD_B = 0u;
+layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+layout(std430, binding=0) readonly  buffer A_f32 { float a[]; };
+layout(std430, binding=2) readonly  buffer B_f32 { float b[]; };
+layout(std430, binding=3) writeonly buffer C_f32 { float c[]; };
+
+// Optional vec4 views (alias the same VkBuffers when enabled)
+layout(std430, binding=8) readonly  buffer A_vec4 { vec4 a4[]; };
+layout(std430, binding=9) readonly  buffer B_vec4 { vec4 b4[]; };
+
+layout(push_constant) uniform PC {
+    uint M,N,K; uint lda,ldb,ldc;
+    uint off_a_e,off_b_e,off_c_e;
+    uint flags; // bit0: B vec4 ok, bit1: A vec4 ok
+} pc;
+
+shared float As[2][TILE_M][TILE_K];
+shared float Bs[2][TILE_K][TILE_N];
+
+void stage_A(uint buf,uint k0){
+    const uint lx=gl_LocalInvocationID.x, ly=gl_LocalInvocationID.y;
+    const uint kChunk=min(TILE_K, pc.K-k0);
+    for(uint i=ly;i<TILE_M;i+=gl_WorkGroupSize.y){
+        const uint gRow=gl_WorkGroupID.y*TILE_M+i; const bool ok=(gRow<pc.M);
+        const uint base=pc.off_a_e+gRow*pc.lda+k0;
+        if((pc.flags&2u)!=0u){
+            uint lim4=kChunk>>2;
+            for(uint kk4=lx; kk4<lim4; kk4+=gl_WorkGroupSize.x){
+                vec4 v=vec4(0.0); if(ok) v=a4[(base>>2)+kk4];
+                uint j=kk4*4u;
+                As[buf][i][j+0]=v.x; As[buf][i][j+1]=v.y; As[buf][i][j+2]=v.z; As[buf][i][j+3]=v.w;
+            }
+            for(uint kk=(lim4<<2)+lx; kk<kChunk; kk+=gl_WorkGroupSize.x){
+                As[buf][i][kk]= ok? a[base+kk]:0.0;
+            }
+        } else {
+            for(uint kk=lx; kk<kChunk; kk+=gl_WorkGroupSize.x){
+                As[buf][i][kk]= ok? a[base+kk]:0.0;
+            }
+        }
+    }
+}
+
+void stage_B(uint buf,uint k0){
+    const uint lx=gl_LocalInvocationID.x, ly=gl_LocalInvocationID.y;
+    const uint tileCol=gl_WorkGroupID.x*TILE_N;
+    const uint kChunk=min(TILE_K, pc.K-k0);
+    for(uint kk=ly; kk<kChunk; kk+=gl_WorkGroupSize.y){
+        const uint gK=k0+kk;
+        const uint base=pc.off_b_e+gK*pc.ldb+tileCol;
+        if((pc.flags&1u)!=0u){
+            const uint n4=TILE_N>>2;
+            for(uint j4=lx; j4<n4; j4+=gl_WorkGroupSize.x){
+                vec4 v=vec4(0.0);
+                const uint gCol4=tileCol+j4*4u;
+                if(gK<pc.K && (gCol4+3u)<pc.N) v=b4[(base>>2)+j4];
+                const uint j=j4*4u;
+                Bs[buf][kk][j+0]=v.x; Bs[buf][kk][j+1]=v.y; Bs[buf][kk][j+2]=v.z; Bs[buf][kk][j+3]=v.w;
+            }
+            for(uint j=(TILE_N&~3u)+lx; j<TILE_N; j+=gl_WorkGroupSize.x){
+                float bv=0.0; const uint gCol=tileCol+j;
+                if(gK<pc.K && gCol<pc.N) bv=b[base+j];
+                Bs[buf][kk][j]=bv;
+            }
+        } else {
+            for(uint j=lx; j<TILE_N; j+=gl_WorkGroupSize.x){
+                float bv=0.0; const uint gCol=tileCol+j;
+                if(gK<pc.K && gCol<pc.N) bv=b[base+j];
+                Bs[buf][kk][j]=bv;
+            }
+        }
+    }
+}
+
+void main(){
+    const uint tileRow=gl_WorkGroupID.y*TILE_M, tileCol=gl_WorkGroupID.x*TILE_N;
+    float acc[TM][TN]; for(uint i=0;i<TM;++i) for(uint j=0;j<TN;++j) acc[i][j]=0.0;
+    uint buf=0u; stage_A(buf,0u); stage_B(buf,0u); barrier();
+    for(uint k0=0u; k0<pc.K; k0+=TILE_K){
+        const uint kChunk=min(TILE_K, pc.K-k0);
+        uint next=buf^1u; if(k0+TILE_K<pc.K){ stage_A(next,k0+TILE_K); stage_B(next,k0+TILE_K);}
+        const uint lx=gl_LocalInvocationID.x, ly=gl_LocalInvocationID.y, row0=ly*TM, col0=lx*TN;
+        for(uint kk=0; kk<kChunk; ++kk){
+            float aReg[TM], bReg[TN];
+            for(uint i=0;i<TM;++i){ uint r=row0+i; aReg[i]=(r<TILE_M)?As[buf][r][kk]:0.0;}
+            for(uint j=0;j<TN;++j){ uint ccol=col0+j; bReg[j]=(ccol<TILE_N)?Bs[buf][kk][ccol]:0.0;}
+            for(uint i=0;i<TM;++i) for(uint j=0;j<TN;++j) acc[i][j]+=aReg[i]*bReg[j];
+        }
+        barrier(); buf=next;
+    }
+    const uint row0=gl_LocalInvocationID.y*TM, col0=gl_LocalInvocationID.x*TN;
+    for(uint i=0;i<TM;++i){
+        uint gRow=tileRow+row0+i; if(gRow>=pc.M) break;
+        uint cBase=pc.off_c_e + gRow*pc.ldc + tileCol + col0;
+        for(uint j=0;j<TN;++j){ uint gCol=tileCol+col0+j; if(gCol<pc.N) c[cBase+j]=acc[i][j]; }
+    }
+}
