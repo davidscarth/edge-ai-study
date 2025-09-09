@@ -1,8 +1,10 @@
-Experimental GLSL shaders to respect the hardware limitations of Raspberry Pi or similar devices
+# low-smem-shaders
 
-Compile with glslc or similar
+Here are some experimental GLSL shaders which respect the hardware limitations of Raspberry Pi or similar devices
 
-General Constraints and Limits:
+Vulkan 1.0 compliant. Compile with glslc or similar.
+
+#### General Hardware Constraints and Limits:
 
 GPU
 * No cooperative matrices
