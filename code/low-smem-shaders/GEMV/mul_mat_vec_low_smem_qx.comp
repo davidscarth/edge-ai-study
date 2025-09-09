@@ -1,0 +1,264 @@
+#version 450
+// LOW_SMEM Q-family GEMV (Q4_0, Q8_0)
+// Quant payload stored as 32-bit words; unpack bytes/nibbles via bit ops.
+// No FP16/INT8 arithmetic or storage; no integer dot product; no cooperative matrices.
+//
+// IMPORTANT: All offsets are in ELEMENTS (not bytes)
+// - off_q_e: offset in uint words for quantized data
+// - off_s_e: offset in floats for scales
+// - off_b_e: offset in floats for B vector
+// - off_d_e: offset in floats for D vector
+//
+// Contract: WG_Y must be 1 for GEMV
+//
+// Format mapping:
+// TYPE_ID | Format | Block Size | Elements/Word
+// --------|--------|------------|---------------
+// 0       | Q4_0   | 32         | 8 nibbles
+// 1       | Q8_0   | 32         | 4 bytes
+
+#ifdef USE_SUBGROUP
+#extension GL_KHR_shader_subgroup_arithmetic : enable
+#endif
+
+// === QX vec4 decode helpers (no FP16/INT8, just 32-bit ints) ===
+// Return 4 signed 8-bit values from one 32-bit word (bytes 0..3)
+ivec4 q8_unpack4(uint w) {
+    int b0 = int(bitfieldExtract(int(w),  0, 8));
+    int b1 = int(bitfieldExtract(int(w),  8, 8));
+    int b2 = int(bitfieldExtract(int(w), 16, 8));
+    int b3 = int(bitfieldExtract(int(w), 24, 8));
+    // Sign-extend (safe even if driver already returns signed)
+    b0 = (b0 << 24) >> 24; b1 = (b1 << 24) >> 24; b2 = (b2 << 24) >> 24; b3 = (b3 << 24) >> 24;
+    return ivec4(b0, b1, b2, b3);
+}
+
+// Return 4 signed 4-bit values from a 32-bit word of packed nibbles.
+// off_nib = 0 → bits [ 3:0,  7:4, 11:8, 15:12]
+// off_nib = 1 → bits [19:16, 23:20, 27:24, 31:28]
+ivec4 q4_unpack4(uint w, uint off_nib) {
+    uint base = off_nib * 16u; // nibble group offset in bits
+    int n0 = int(bitfieldExtract(int(w), int(base +  0u), 4));
+    int n1 = int(bitfieldExtract(int(w), int(base +  4u), 4));
+    int n2 = int(bitfieldExtract(int(w), int(base +  8u), 4));
+    int n3 = int(bitfieldExtract(int(w), int(base + 12u), 4));
+    // Map unsigned [0..15] → signed [-8..7]
+    return ivec4(n0 - 8, n1 - 8, n2 - 8, n3 - 8);
+}
+
+// ---- Common helpers ----
+// Sign-extend low 8 bits to 32
+int sxt8(uint x) { return int(x << 24) >> 24; }
+
+// Extract low/high nibble from a byte (0..15)
+uint nibble(uint byteVal, bool high) {
+    return high ? ((byteVal >> 4u) & 0xFu) : (byteVal & 0xFu);
+}
+
+// Q4_0 block geometry
+const uint Q4_0_QK        = 32u;   // elements per block
+const uint Q4_0_QK_LOG2   = 5u;    // log2(32)
+const uint Q4_0_QK_MASK   = Q4_0_QK - 1u;
+const uint Q4_0_QS_BYTES  = Q4_0_QK / 2u; // 16 bytes
+const uint Q4_0_QS_WORDS  = Q4_0_QS_BYTES / 4u; // 4 words
+
+// Q8_0 block geometry
+const uint Q8_0_QK        = 32u;   // 32 int8 per block
+const uint Q8_0_QK_LOG2   = 5u;    // log2(32)
+const uint Q8_0_QS_BYTES  = Q8_0_QK;     // 32 bytes
+const uint Q8_0_QS_WORDS  = Q8_0_QS_BYTES / 4u; // 8 words
+
+// Spec constants for optimization
+layout (constant_id = 0) const uint TYPE_ID = 0u;      // 0=Q4_0, 1=Q8_0
+layout (constant_id = 2) const uint RPT = 2u;          // Rows per thread
+layout (constant_id = 3) const uint K_TILE = 256u;     // K tile size
+layout (constant_id = 4) const uint VEC_W = 4u;        // Vector width (1,2,4)
+layout (constant_id = 5) const uint SMEM_PAD = 4u;     // Padding to avoid bank conflicts
+
+layout (constant_id = 1) const uint WG_X_DEFAULT = 256u; // default WG size if not specialized (≤256)
+
+layout (local_size_x_id = 1, local_size_y = 1, local_size_z = 1) in;
+
+// Unified descriptor set bindings
+layout(std430, binding=1) readonly buffer Q_codes { uint qs[]; };    // Quantized A codes (Q4/Q8)
+layout(std430, binding=2) readonly buffer B { float b[]; };          // Input vector b
+layout(std430, binding=3) writeonly buffer Y { float d[]; };         // Output y
+layout(std430, binding=4) readonly buffer Scales { float sc[]; };    // Per-block scales
+
+// Helper functions that need buffer access
+// Read byte at absolute byte index from a uint[] SSBO
+uint qs_byte_at(uint baseWord, uint byteIdx) {
+    uint word = qs[baseWord + (byteIdx >> 2)]; // which 32-bit word
+    uint sh   = (byteIdx & 3u) * 8u;           // which byte within that word
+    return (word >> sh) & 0xFFu;
+}
+
+// Read signed byte from uint[] SSBO
+int q8_sbyte(uint baseWord, uint byteIdx) {
+    uint word = qs[baseWord + (byteIdx >> 2)];
+    uint sh = (byteIdx & 3u) * 8u;
+    return sxt8((word >> sh) & 0xFFu);
+}
+
+// Push constants (shape/strides, offsets in ELEMENTS)
+layout(push_constant) uniform PC {
+    uint M, K;                        // rows of A, K dimension
+    uint off_q_e, off_s_e;            // offsets in ELEMENTS for qs/sc
+    uint off_b_e, off_d_e;            // offsets in ELEMENTS for b/d
+    uint blocks_per_row;              // number of quant blocks per row
+} pc;
+
+// Shared memory with padding to avoid bank conflicts
+shared float smem_b[2][K_TILE + SMEM_PAD];
+
+// ===========================================================================
+// Unscaled decoders for block-scale fusion optimization
+// ===========================================================================
+
+// --- S1 fusion helper: apply scale once per block (QX has no bias) ---
+inline void flush_block(inout float acc, inout float s1, const float scale) {
+    acc += scale * s1;
+    s1 = 0.0;
+}
+
+// Unscaled vector decoders (return raw integer values as floats)
+vec4 q4_0_unpack4_unscaled(uint qs_base_words, uint elem_in_block) {
+    // Robust cross-word gather with a guarded read at block end
+    uint base_word = qs_base_words + (elem_in_block >> 3u); // 8 nibbles/word
+    uint base_bit  = (elem_in_block & 7u) * 4u;             // bit offset in base_word
+    uint end_idx   = qs_base_words + Q4_0_QS_WORDS;         // one past last word in this block
+
+    uvec4 out;
+    for (uint i = 0u; i < 4u; ++i) {
+        uint bit_pos = base_bit + i * 4u;
+        uint woff    = bit_pos >> 5u;        // 0..1
+        uint sh      = bit_pos & 31u;        // 0..31
+        uint w0 = qs[base_word + woff];
+        uint w1_idx = base_word + woff + 1u;
+        uint w1 = (w1_idx < end_idx) ? qs[w1_idx] : 0u;
+        uint hi = (sh == 0u) ? 0u : (w1 << (32u - sh));
+        uint v  = (w0 >> sh) | hi;
+        out[i]  = v & 0xFu;
+    }
+    return vec4(out) - 8.0;
+}
+
+vec4 q8_0_unpack4_unscaled(uint qs_base_words, uint elem_in_block) {
+    uint word_idx = elem_in_block >> 2u;  // /4
+    uint word = qs[qs_base_words + word_idx];
+    ivec4 bytes = ivec4(
+        int(word & 0xFFu),
+        int((word >> 8u) & 0xFFu),
+        int((word >> 16u) & 0xFFu),
+        int(word >> 24u)
+    );
+    bytes = (bytes << 24) >> 24; // sign-extend
+    return vec4(bytes);
+}
+
+float q4_0_scalar_unscaled(uint qs_base_words, uint elem_in_block) {
+    uint byte_idx = elem_in_block >> 1u;
+    uint byte_val = qs_byte_at(qs_base_words, byte_idx);
+    bool high = (elem_in_block & 1u) != 0u;
+    uint nib = high ? (byte_val >> 4u) & 0xFu : (byte_val & 0xFu);
+    return float(nib) - 8.0;
+}
+
+float q8_0_scalar_unscaled(uint qs_base_words, uint elem_in_block) {
+    return float(q8_sbyte(qs_base_words, elem_in_block));
+}
+
+void main() {
+    const uint row0 = gl_GlobalInvocationID.x * RPT;
+    
+    // Determine block parameters based on format
+    const uint block_size = (TYPE_ID == 0u) ? Q4_0_QK : Q8_0_QK;
+    const uint block_shift = (TYPE_ID == 0u) ? Q4_0_QK_LOG2 : Q8_0_QK_LOG2;
+    const uint block_mask = block_size - 1u;
+    const uint qs_words_per_block = (TYPE_ID == 0u) ? Q4_0_QS_WORDS : Q8_0_QS_WORDS;
+
+    float acc[RPT];
+    for (uint r = 0u; r < RPT; ++r) acc[r] = 0.0;
+
+    uint buf = 0u;
+
+    // Preload tile 0
+    {
+        const uint k_tail0 = min(K_TILE, pc.K);
+        barrier();
+        for (uint kk = gl_LocalInvocationID.x; kk < k_tail0; kk += gl_WorkGroupSize.x)
+            smem_b[buf][kk] = b[pc.off_b_e + kk];
+        for (uint kk = gl_LocalInvocationID.x + k_tail0; kk < K_TILE; kk += gl_WorkGroupSize.x)
+            smem_b[buf][kk] = 0.0;
+        barrier();
+    }
+
+    for (uint kt = 0u; kt < pc.K; kt += K_TILE) {
+        const uint next = buf ^ 1u;
+        if (kt + K_TILE < pc.K) {
+            const uint k_tail = min(K_TILE, pc.K - (kt + K_TILE));
+            barrier();
+            for (uint kk = gl_LocalInvocationID.x; kk < k_tail; kk += gl_WorkGroupSize.x)
+                smem_b[next][kk] = b[pc.off_b_e + (kt + K_TILE) + kk];
+            for (uint kk = gl_LocalInvocationID.x + k_tail; kk < K_TILE; kk += gl_WorkGroupSize.x)
+                smem_b[next][kk] = 0.0;
+            barrier();
+        }
+
+        const uint k_lim = min(K_TILE, pc.K - kt);
+
+        // For each repeated row handled by this thread:
+        for (uint r = 0u; r < RPT; ++r) {
+            const uint row = row0 + r;
+            if (row >= pc.M) break;
+
+            // --- S1 fusion state (scale applied once per block) ---
+            uint cur_block = 0xFFFFFFFFu;
+            float s1 = 0.0;   // sum(q*b) over current block
+            float scale = 0.0;
+
+            for (uint k = 0u; k < k_lim; /* advance inside */) {
+                const uint gk   = kt + k;
+                const uint bidx = row * pc.blocks_per_row + (gk >> block_shift);
+
+                if (bidx != cur_block) {
+                    if (cur_block != 0xFFFFFFFFu) acc[r] += scale * s1;
+                    cur_block = bidx;
+                    scale = sc[pc.off_s_e + bidx];
+                    s1 = 0.0;
+                }
+
+                const uint elem = gk & block_mask;
+                const uint qs_base_words = pc.off_q_e + bidx * qs_words_per_block;
+
+                // Fast 4-wide if safe (same block and aligned)
+                const uint room = block_size - elem;
+                if (room >= VEC_W && k + VEC_W <= k_lim) {
+                    vec4 qv = (TYPE_ID == 0u)
+                            ? q4_0_unpack4_unscaled(qs_base_words, elem)
+                            : q8_0_unpack4_unscaled(qs_base_words, elem);
+                    s1 += qv.x * smem_b[buf][k+0u] + qv.y * smem_b[buf][k+1u]
+                        + qv.z * smem_b[buf][k+2u] + qv.w * smem_b[buf][k+3u];
+                    k += 4u;
+                } else {
+                    float q = (TYPE_ID == 0u)
+                            ? q4_0_scalar_unscaled(qs_base_words, elem)
+                            : q8_0_scalar_unscaled(qs_base_words, elem);
+                    s1 += q * smem_b[buf][k];
+                    k += 1u;
+                }
+            }
+            // flush last block for this tile
+            if (cur_block != 0xFFFFFFFFu) acc[r] += scale * s1;
+        }
+
+        buf = next;
+    }
+
+    // store
+    for (uint r = 0u; r < RPT; ++r) {
+        const uint row = row0 + r;
+        if (row >= pc.M) break;
+        d[pc.off_d_e + row] = acc[r];
+    }
+}

@@ -1,0 +1,40 @@
+#version 450
+// block_sum_b.comp - compute Σ(b) per 256-element block
+// Launch with num_workgroups = ceil(K / 256), local_size_x = 256.
+
+layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+
+// Unified descriptor set bindings
+layout(std430, binding=2) readonly buffer B { float b[]; };          // Input vector b
+layout(std430, binding=8) writeonly buffer Bsum { float bsum[]; };   // Σ(b) per 256-block
+
+layout(push_constant) uniform PC {
+    uint K;        // length of vector b
+    uint off_b_e;  // element offset into b
+} pc;
+
+shared float sh[256];
+
+void main() {
+    uint block = gl_WorkGroupID.x;
+    uint start = block * 256u;
+    if (start >= pc.K) return;
+    uint end = min(start + 256u, pc.K);
+
+    float s = 0.0;
+    for (uint i = start + gl_LocalInvocationID.x; i < end; i += gl_WorkGroupSize.x) {
+        s += b[pc.off_b_e + i];
+    }
+    sh[gl_LocalInvocationID.x] = s;
+    barrier();
+
+    for (uint stride = gl_WorkGroupSize.x >> 1; stride > 0u; stride >>= 1u) {
+        if (gl_LocalInvocationID.x < stride) {
+            sh[gl_LocalInvocationID.x] += sh[gl_LocalInvocationID.x + stride];
+        }
+        barrier();
+    }
+    if (gl_LocalInvocationID.x == 0u) {
+        bsum[block] = sh[0];
+    }
+}

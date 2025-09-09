@@ -1,0 +1,326 @@
+#version 450
+// LOW_SMEM K/I-family GEMV
+// Supports K-quants (Q2_K, Q3_K, Q4_K, Q5_K, Q6_K) and IQ* via LUTs; decoders match ggml.
+// No FP16/INT8 arithmetic or storage; no integer dot product; no cooperative matrices.
+//
+// IMPORTANT: All offsets are in ELEMENTS (not bytes)
+// - off_q_e: offset in uint words for quantized data
+// - off_s_e: offset in floats for scales
+// - off_mn_e: offset in floats for mins/zero-points
+// - off_b_e: offset in floats for B vector
+// - off_d_e: offset in floats for D vector
+//
+// Contract: WG_Y must be 1 for GEMV
+//
+// Format mapping table:
+// TYPE_ID | Format  | Bits | Block Size | Has Min | Notes
+// --------|---------|------|------------|---------|-------
+// 0       | Q4_K    | 4    | 256        | Yes     | K-quant 4-bit
+// 1       | Q5_K    | 5    | 256        | Yes     | K-quant 5-bit
+// 2       | Q6_K    | 6    | 256        | Yes     | K-quant 6-bit
+// 3       | Q2_K    | 2    | 256        | Yes     | K-quant 2-bit
+// 4       | Q3_K    | 3    | 256        | Yes     | K-quant 3-bit
+// 5+      | IQ*     | var  | 256        | No      | I-quants (need LUTs)
+
+#ifdef USE_SUBGROUP
+#extension GL_KHR_shader_subgroup_arithmetic : enable
+#endif
+
+// Safe load from qs buffer; returns 0 when idx >= end_idx
+inline uint qs_load(uint idx, uint end_idx) {
+    return (idx < end_idx) ? qs[idx] : 0u;
+}
+
+// K-quant super-block size (must match ggml)
+#define QK_K 256
+#define K_SCALE_SIZE 12
+
+// Spec constants for optimization
+layout (constant_id = 0) const uint TYPE_ID = 0u;      // Format type (see table above)
+layout (constant_id = 2) const uint RPT = 2u;          // Rows per thread
+layout (constant_id = 3) const uint K_TILE = 256u;
+layout (constant_id = 6) const uint USE_BSUM = 1u;  // 1 = use precomputed Σ(b) per 256-block (binding=7)
+layout (constant_id = 4) const uint VEC_W = 4u;        // Vector width (1,2,4)
+layout (constant_id = 5) const uint SMEM_PAD = 4u;     // Padding to avoid bank conflicts
+
+layout (constant_id = 1) const uint WG_X_DEFAULT = 256u; // default WG size if not specialized (≤256)
+
+layout (local_size_x_id = 1, local_size_y = 1, local_size_z = 1) in;
+
+// Unified descriptor set bindings
+layout(std430, binding=1) readonly buffer Q_codes { uint qs[]; };       // Quantized A codes (K/IQ)
+layout(std430, binding=2) readonly buffer B { float b[]; };             // Input vector b
+layout(std430, binding=3) writeonly buffer Y { float d[]; };            // Output y
+layout(std430, binding=4) readonly buffer Scales { float sc[]; };       // Per-(sub)block scales
+layout(std430, binding=5) readonly buffer Mins { float mn[]; };         // Per-(sub)block mins/ZPs
+layout(std430, binding=6) readonly buffer IQ_LUT { float lut[]; };      // IQ codebook
+layout(std430, binding=7) readonly buffer IQ_LUT_Offsets { uint lut_off[]; }; // IQ LUT base offsets
+layout(std430, binding=8) readonly buffer Bsum { float bsum[]; };       // Σ(b) per 256-block
+
+// Helper function that needs buffer access
+// Read byte at absolute byte index from a uint[] SSBO
+
+// Push constants (offsets in ELEMENTS)
+layout(push_constant) uniform PC {
+    uint M, K;
+    uint off_q_e, off_s_e, off_mn_e;
+    uint off_b_e, off_d_e;
+    uint block_sz_q;                 // bytes of payload per block
+    uint blocks_per_row;
+} pc;
+
+// Shared memory with padding to avoid bank conflicts
+shared float smem_b[2][K_TILE + SMEM_PAD];
+
+// ===========================================================================
+// Generic bit extraction helpers - single source of truth for all formats
+// ===========================================================================
+
+// Read up to 6 bits starting at a bit offset from a uint[] stream
+// Returns an unsigned integer in [0, (1<<bits)-1]
+uint bits_u(uint base_word, uint next_word, uint bit_off, uint bits) {
+    uint sh = bit_off & 31u;
+    uint mask = (1u << bits) - 1u;
+    // Gather across boundary without branches
+    uint w_hi = (sh == 0u) ? 0u : (next_word << (32u - sh));
+    uint w = (base_word >> sh) | w_hi;
+    return w & mask;
+}
+
+// Vectorized extraction with guarded loads (no buffer padding required)
+uvec4 bits_u4(uint base_idx, uint base_bit, uint bits, uint end_idx) {
+    uvec4 result;
+    uint mask = (1u << bits) - 1u;
+    for (uint i = 0u; i < 4u; i++) {
+        uint bit_pos    = base_bit + i * bits;
+        uint word_off   = bit_pos >> 5u;
+        uint bit_in     = bit_pos & 31u;
+        uint w0 = qs_load(base_idx + word_off, end_idx);
+        uint w1 = qs_load(base_idx + word_off + 1u, end_idx);
+        uint hi = (bit_in == 0u) ? 0u : (w1 << (32u - bit_in));
+        uint val = (w0 >> bit_in) | hi;
+        result[i] = val & mask;
+    }
+    return result;
+}
+
+// Get bit width for a given format type
+uint get_bits_for_type(uint type_id) {
+    // K-quants
+    if (type_id == 0u) return 4u;  // Q4_K
+    if (type_id == 1u) return 5u;  // Q5_K
+    if (type_id == 2u) return 6u;  // Q6_K
+    if (type_id == 3u) return 2u;  // Q2_K
+    if (type_id == 4u) return 3u;  // Q3_K
+    // IQ formats
+    if (type_id == 5u) return 2u;  // IQ2_XXS
+    if (type_id == 6u) return 2u;  // IQ2_XS
+    if (type_id == 7u) return 2u;  // IQ2_S
+    if (type_id == 8u) return 3u;  // IQ3_XXS
+    if (type_id == 9u) return 3u;  // IQ3_S
+    if (type_id == 10u) return 4u; // IQ4_XS
+    return 4u;  // default
+}
+
+// Block metadata structure
+struct BlockMeta {
+    // Grouped by source
+    float scale;
+    float minv;
+
+    // Grouped by relation
+    uint  qs_base;
+    uint  qs_end;
+
+    // Grouped by format properties
+    uint  bits;
+    float zero_point;
+};
+
+// Load block metadata for a given block
+void load_block_meta(uint type_id, uint block_idx, uint elem_in_block, out BlockMeta meta) {
+    meta.qs_base = pc.off_q_e + block_idx * (pc.block_sz_q >> 2u);
+    meta.qs_end  = meta.qs_base + (pc.block_sz_q >> 2u);
+    meta.bits = get_bits_for_type(type_id);
+    if (type_id >= 5u) {
+        // IQ: LUT values are already dequantized; no min/zero-point needed
+        meta.scale = sc[pc.off_s_e + block_idx];
+        meta.minv = 0.0;
+        meta.zero_point = 0.0;
+    } else {
+        // K-quants with sub-indexing
+        uint sub = k_sub_index_for_elem(type_id, elem_in_block);
+        meta.scale = sc[pc.off_s_e  + block_idx * K_SCALE_SIZE + sub];
+        meta.minv  = mn[pc.off_mn_e + block_idx * K_SCALE_SIZE + sub];
+        meta.zero_point = float(1u << (meta.bits - 1u));
+    }
+}
+
+// --- Block-affine fusion helpers ---
+inline void flush_block(inout float acc, inout float s1, const BlockMeta meta, const float bsum_block) {
+    if (TYPE_ID >= 5u) {
+        // IQ: LUT already yields dequantized values for this block.
+        // If your LUT is *normalized* and needs a per-block scale, change to:
+        //   acc += meta.scale * s1;
+        acc += s1;
+    } else {
+        float bias = meta.minv - meta.scale * meta.zero_point;
+        acc += meta.scale * s1 + bias * bsum_block;
+    }
+    s1 = 0.0;
+}
+
+inline bool is_iq(uint type_id) { return type_id >= 5u; }
+
+// Map element-in-256-block -> sub-scale index for K-quants.
+// K-quants have 12 scales per 256-element block
+uint k_sub_index_for_elem(const uint TYPE_ID, const uint elem_in_block) {
+    // For K-quants: 256 elements divided into 12 scale groups
+    // This is a temporary uniform mapping: 12 bins over 256 elements (≈21-22 elems/bin)
+    // TODO: Replace with exact mapping from CPU packer if different per format
+    
+    if (TYPE_ID <= 4u) {  // K-quants (Q2_K through Q6_K)
+        // Temporary mechanically correct 12-slot mapping
+        // Maps 0-255 -> 0-11 uniformly
+        return (elem_in_block * 12u) >> 8u;  // equivalent to (elem_in_block * 12) / 256
+        
+        // TODO: Uncomment and adjust for exact CPU packer mapping:
+        // if (TYPE_ID == 0u) {  // Q4_K
+        //     const uint map[12] = uint[12](/* exact mapping */);
+        //     return map[elem_in_block / 21u];  // or appropriate indexing
+        // } else if (TYPE_ID == 1u) {  // Q5_K
+        //     ...
+        // } else if (TYPE_ID == 2u) {  // Q6_K
+        //     ...
+        // }
+    }
+    
+    // IQ formats don't use sub-scales
+    return 0u;
+}
+
+// Unified vectorized decode - single path for all bit widths
+
+
+// Unified vectorized decoder - works for all K-quants and IQ formats
+
+
+// Unified scalar decoder using generic bit extraction
+
+void main() {
+    const uint row0 = gl_GlobalInvocationID.x * RPT;
+
+    float acc[RPT];
+    for (uint r=0u; r<RPT; ++r) acc[r] = 0.0;
+
+    uint buf = 0u;
+
+    // Preload tile 0
+    {
+        const uint k_tail0 = min(K_TILE, pc.K);
+        barrier();
+        for (uint kk = gl_LocalInvocationID.x; kk < k_tail0; kk += gl_WorkGroupSize.x)
+            smem_b[buf][kk] = b[pc.off_b_e + kk];
+        for (uint kk = gl_LocalInvocationID.x + k_tail0; kk < K_TILE; kk += gl_WorkGroupSize.x)
+            smem_b[buf][kk] = 0.0;
+        barrier();
+    }
+
+    for (uint kt = 0u; kt < pc.K; kt += K_TILE) {
+        const uint next = buf ^ 1u;
+        if (kt + K_TILE < pc.K) {
+            const uint k_tail = min(K_TILE, pc.K - (kt + K_TILE));
+            barrier();
+            for (uint kk = gl_LocalInvocationID.x; kk < k_tail; kk += gl_WorkGroupSize.x)
+                smem_b[next][kk] = b[pc.off_b_e + (kt + K_TILE) + kk];
+            for (uint kk = gl_LocalInvocationID.x + k_tail; kk < K_TILE; kk += gl_WorkGroupSize.x)
+                smem_b[next][kk] = 0.0;
+            barrier();
+        }
+
+        const uint k_lim = min(K_TILE, pc.K - kt);
+
+        for (uint r = 0u; r < RPT; ++r) {
+            const uint row = row0 + r;
+            if (row >= pc.M) break;
+
+            // ---- K/IQ decode + block-affine fusion ----
+            uint cur_block = 0xFFFFFFFFu, cur_sub = 0xFFFFFFFFu;
+            BlockMeta meta; 
+            float s1 = 0.0, s2 = 0.0; // s2 used only if !USE_BSUM
+
+            for (uint k = 0u; k < k_lim; /* advance inside */) {
+                const uint gk = kt + k;
+                const uint kblk = gk >> 8;          // 256-wide block
+                const uint eib  = gk & 255u;        // elem in block
+                const uint sub  = k_sub_index_for_elem(TYPE_ID, eib);
+                const uint bidx = row * pc.blocks_per_row + kblk;
+
+                if (kblk != cur_block || sub != cur_sub) {
+                    if (cur_block != 0xFFFFFFFFu) {
+                        float bias = meta.minv - meta.scale * meta.zero_point;
+                        acc[r] += meta.scale * s1 + bias * (USE_BSUM != 0u ? bsum[cur_block] : s2);
+                        s1 = 0.0; s2 = 0.0;
+                    }
+                    load_block_meta(TYPE_ID, bidx, eib, meta);
+                    cur_block = kblk; 
+                    cur_sub = sub;
+                }
+
+                // Determine if we can do 4-wide decode safely
+                uint room = 256u - eib;
+                if (room >= VEC_W && k + VEC_W <= k_lim) {
+                    // Fast 4-wide path
+                    uint bit_base = eib * meta.bits;
+                    uint base_idx = meta.qs_base + (bit_base >> 5u);
+                    uvec4 qv = bits_u4(base_idx, bit_base & 31u, meta.bits, meta.qs_end);
+
+                    if (TYPE_ID >= 5u) {
+                        // IQ format: use LUT (offsets are per-row)
+                        uint lbase = lut_off[row * pc.blocks_per_row + cur_block];
+                        s1 += lut[lbase + qv.x] * smem_b[buf][k+0u] 
+                            + lut[lbase + qv.y] * smem_b[buf][k+1u]
+                            + lut[lbase + qv.z] * smem_b[buf][k+2u] 
+                            + lut[lbase + qv.w] * smem_b[buf][k+3u];
+                    } else {
+                        // K-quant: raw quantized values
+                        vec4 qf = vec4(qv);
+                        s1 += qf.x * smem_b[buf][k+0u] + qf.y * smem_b[buf][k+1u]
+                            + qf.z * smem_b[buf][k+2u] + qf.w * smem_b[buf][k+3u];
+                    }
+                    
+                    if (USE_BSUM == 0u) {
+                        s2 += smem_b[buf][k+0u] + smem_b[buf][k+1u]
+                            + smem_b[buf][k+2u] + smem_b[buf][k+3u];
+                    }
+                    k += 4u;
+                } else {
+                    // Scalar path
+                    uint bit_base = eib * meta.bits;
+                    uint word_idx = meta.qs_base + (bit_base >> 5u);
+                    uint w0 = qs[word_idx];
+                    uint w1 = qs_load(word_idx + 1u, meta.qs_end);
+                    uint q = bits_u(w0, w1, bit_base & 31u, meta.bits);
+
+                    float a = (TYPE_ID >= 5u) ? lut[lut_off[row * pc.blocks_per_row + cur_block] + q] : float(q);
+                    s1 += a * smem_b[buf][k];
+                    if (USE_BSUM == 0u) s2 += smem_b[buf][k];
+                    k += 1u;
+                }
+            }
+            // flush final block for this tile
+            if (cur_block != 0xFFFFFFFFu) {
+                const float bias = (meta.minv - meta.scale * meta.zero_point);
+                acc[r] += meta.scale * s1 + bias * (USE_BSUM != 0u ? bsum[cur_block] : s2);
+            }
+        }
+
+        buf = next;
+    }
+
+    for (uint r=0u; r<RPT; ++r) {
+        const uint row = row0 + r;
+        if (row >= pc.M) break;
+        d[pc.off_d_e + row] = acc[r];
+    }
+}

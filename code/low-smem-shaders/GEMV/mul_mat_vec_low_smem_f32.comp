@@ -1,0 +1,126 @@
+#version 450
+// LOW_SMEM F32 GEMV - Pure F32, no extensions needed
+// Uses ~2 KiB shared memory; works on devices with ≥16 KiB SMEM
+// No FP16/INT8 arithmetic or storage; no integer dot product; no cooperative matrices
+//
+// IMPORTANT: All offsets are in ELEMENTS (not bytes)
+// - off_a_e: offset in floats for A matrix
+// - off_b_e: offset in floats for B vector
+// - off_d_e: offset in floats for D vector
+//
+// Contract: WG_Y must be 1 for GEMV
+
+#ifdef USE_SUBGROUP
+#extension GL_KHR_shader_subgroup_arithmetic : enable
+#endif
+
+// Spec constants for optimization
+layout (constant_id = 0) const uint TYPE_ID = 0u;      // Always 0 for F32
+layout (constant_id = 2) const uint RPT = 2u;          // Rows per thread
+layout (constant_id = 3) const uint K_TILE = 256u;     // K tile size (doubles buffering nicely)
+layout (constant_id = 4) const uint VEC_W = 4u;        // Vector width (kept at 4 for vec4 path)
+layout (constant_id = 5) const uint SMEM_PAD = 4u;     // Padding to avoid bank conflicts
+
+layout (constant_id = 1) const uint WG_X_DEFAULT = 256u; // default WG size if not specialized (≤256)
+
+layout (local_size_x_id = 1, local_size_y = 1, local_size_z = 1) in;
+
+// Unified descriptor set bindings
+layout(std430, binding=0) readonly buffer A_f32 { float a[]; };      // FP32 matrix A
+layout(std430, binding=2) readonly buffer B { float b[]; };          // Input vector b
+layout(std430, binding=3) writeonly buffer Y { float d[]; };         // Output y
+layout(std430, binding=9) readonly buffer A_f32_v4 { vec4 a4[]; };   // Optional vec4 alias for A (128-bit loads)
+
+// Push constants for shape and offsets (in ELEMENTS)
+layout(push_constant) uniform PC {
+    uint M, K;                      // Matrix dimensions
+    uint lda;                       // Stride for A matrix in elements
+    uint off_a_e, off_b_e, off_d_e; // Base offsets in ELEMENTS
+} pc;
+
+// Shared memory with padding to avoid bank conflicts
+shared float smem_b[2][K_TILE + SMEM_PAD];  // ping-pong double buffer
+
+void main() {
+    // row base for this thread:
+    const uint row0 = gl_GlobalInvocationID.x * RPT;
+
+    float acc[RPT];
+    for (uint r = 0u; r < RPT; ++r) acc[r] = 0.0;
+
+    uint buf = 0u;
+
+    // Preload tile 0 into smem_b[buf]
+    {
+        const uint k_tail0 = min(K_TILE, pc.K);
+        barrier();
+        for (uint kk = gl_LocalInvocationID.x; kk < k_tail0; kk += gl_WorkGroupSize.x)
+            smem_b[buf][kk] = b[pc.off_b_e + kk];
+        for (uint kk = gl_LocalInvocationID.x + k_tail0; kk < K_TILE; kk += gl_WorkGroupSize.x)
+            smem_b[buf][kk] = 0.0;
+        barrier();
+    }
+
+    for (uint kt = 0u; kt < pc.K; kt += K_TILE) {
+        // Prefetch next tile (if any) into the other page
+        const uint next = buf ^ 1u;
+        if (kt + K_TILE < pc.K) {
+            const uint k_tail = min(K_TILE, pc.K - (kt + K_TILE));
+            barrier();
+            for (uint kk = gl_LocalInvocationID.x; kk < k_tail; kk += gl_WorkGroupSize.x)
+                smem_b[next][kk] = b[pc.off_b_e + (kt + K_TILE) + kk];
+            for (uint kk = gl_LocalInvocationID.x + k_tail; kk < K_TILE; kk += gl_WorkGroupSize.x)
+                smem_b[next][kk] = 0.0;
+            barrier();
+        }
+
+        // Compute this tile for all RPT rows
+        const uint k_tail = min(K_TILE, pc.K - kt);
+        const uint k_vec_end = k_tail - (k_tail % VEC_W); // round down to multiple of VEC_W
+        
+        for (uint r = 0u; r < RPT; ++r) {
+            const uint row = row0 + r;
+            if (row >= pc.M) break;
+
+            const uint a_row_offset = pc.off_a_e + row * pc.lda + kt;
+            
+            // Check if we can use fast vec4 loads (16-byte aligned)
+            const uint a_base = pc.off_a_e + row * pc.lda + kt;
+            const bool a16 = ((a_base & 3u) == 0u) && ((pc.lda & 3u) == 0u);
+
+            if (VEC_W == 4u && a16) {
+                // Fast path: true 128-bit loads from vec4 buffer
+                uint base4 = a_base >> 2;               // elements→vec4 index
+                uint k = 0u;
+                for (; k + 4u <= k_tail; k += 4u) {
+                    vec4 av = a4[base4 + (k >> 2)];     // one 128-bit global read
+                    vec4 bv = vec4(
+                        smem_b[buf][k+0u],
+                        smem_b[buf][k+1u],
+                        smem_b[buf][k+2u],
+                        smem_b[buf][k+3u]
+                    );
+                    acc[r] += dot(av, bv);
+                }
+                // scalar tail
+                for (; k < k_tail; ++k) {
+                    acc[r] += a[a_base + k] * smem_b[buf][k];
+                }
+            } else {
+                // Fallback: scalar path (or vec2 if implemented)
+                for (uint k = 0u; k < k_tail; ++k) {
+                    acc[r] += a[a_row_offset + k] * smem_b[buf][k];
+                }
+            }
+        }
+
+        buf = next;
+    }
+
+    // Write back
+    for (uint r = 0u; r < RPT; ++r) {
+        const uint row = row0 + r;
+        if (row >= pc.M) break;
+        d[pc.off_d_e + row] = acc[r];
+    }
+}
