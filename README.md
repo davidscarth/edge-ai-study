@@ -4,7 +4,7 @@ Feasibility Study of Edge AI on resource-constrained hardware.
 Testing Hardware:
 * Raspberry Pi 5 (16GB)
 * Raspberry Pi 4 (8GB)
-* Nvidia Jetson Orin Nano Super
+* Nvidia Jetson Orin Nano Super (8GB)
 
 ## Repository Structure
 
