@@ -14,7 +14,7 @@ I expect that the Orin Nano will be a much more capable device than the Raspi se
 The following build with a budget of approximately $300
 * [Nvidia Jetson Orin Nano Super](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) (8GB) ($249 from Amazon)
   * Ampere GPU w/ 1024 CUDA cores, 32 tensor cores; 6-core ARM Cortex-A78AE v8.2 64-bit CPU; 8GB LPDDR5
-* [Crucial P310 500GB NVMe M.2 SSD](https://www.raspberrypi.com/products/ssd-kit/) ($46 from Amazon)
+* [Crucial P310 500GB NVMe M.2 SSD](https://www.crucial.com/ssd/p310/ct500p310ssd8) ($46 from Amazon)
 
 As of 8/2025, the Orin Nano Super comes with firmware 36.4.3-gcid-38968081. It has "MAXN_SUPER" mode available out of the box and is compatible with JetPack 6.2 without needing to update the firmware.
 
