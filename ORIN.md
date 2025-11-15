@@ -12,7 +12,7 @@ I expect that the Orin Nano will be a much more capable device than the Raspi se
 
 ## Hardware
 The following build with a budget of approximately $300
-* [Nvidia Jetson Orin Nano Super](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) ($249 from Amazon)
+* [Nvidia Jetson Orin Nano Super](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) (8GB) ($249 from Amazon)
   * Ampere GPU w/ 1024 CUDA cores, 32 tensor cores; 6-core ARM Cortex-A78AE v8.2 64-bit CPU; 8GB LPDDR5
 * [Crucial P310 500GB NVMe M.2 SSD](https://www.raspberrypi.com/products/ssd-kit/) ($46 from Amazon)
 
