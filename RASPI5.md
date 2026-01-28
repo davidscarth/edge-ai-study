@@ -367,6 +367,8 @@ watch -n0.5 'vcgencmd measure_clock core; vcgencmd measure_temp; vcgencmd get_th
 ```
 
 ## Future
+Testing on the [Raspberry Pi AI HAT+ 2](https://pip-assets.raspberrypi.com/categories/1319-raspberry-pi-ai-hat-2/documents/RP-009655-MM-4-raspberry-pi-ai-hat-plus-2-product-brief.pdf?disposition=inline) ([Documentation](https://www.raspberrypi.com/documentation/computers/ai.html#LLMs))
+
 Possibly explore attaching an external graphics card? Maybe a cheapo one?
 
 Possibly repeat test on Intel N150/N200 miniPC? Also runs around $200usd.
