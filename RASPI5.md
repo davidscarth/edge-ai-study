@@ -108,10 +108,10 @@ mkdir -p "$BASE"
 # Works with the new 'hf download' syntax.
 dl() {
   local repo="$1"   # e.g. bartowski/SmolLM2-1.7B-Instruct-GGUF
-  local slug="$2"   # folder name, e.g. smollm2-1_7b
+  local alias="$2"   # folder name, e.g. smollm2-1_7b
   local quant="$3"  # Q4_K_M | Q8_0 | IQ3_XS
 
-  local out="${BASE}/${slug}/${quant}"
+  local out="${BASE}/${alias}/${quant}"
   mkdir -p "$out"
   echo "==> ${repo}  (${quant})  ->  ${out}"
   hf download "${repo}" \
