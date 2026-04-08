@@ -46,5 +46,50 @@ Correct (new line 10, for an NVMe drive in the 2280 slot):
 
 Once you fix the extlinux.conf file, it will boot and finish setup as normal, no need for any SD card.
 
-APT upgrade to JetPack 6.2.2/Jetson Linux 36.5
-https://docs.nvidia.com/jetson/archives/r36.5/DeveloperGuide/SD/SoftwarePackagesAndTheUpdateMechanism.html#updating-to-a-new-minor-release
+### Snap update issue workaround (specific to the Jetson Nano)
+```shell
+snap download snapd --revision=24724
+sudo snap ack snapd_24724.assert
+sudo snap install snapd_24724.snap
+sudo snap refresh --hold snapd
+```
+### Update packages
+*APT upgrade to JetPack 6.2.2/Jetson Linux 36.5 [per nVidia docs](https://docs.nvidia.com/jetson/archives/r36.5/DeveloperGuide/SD/SoftwarePackagesAndTheUpdateMechanism.html#updating-to-a-new-minor-release)*
+
+From  CLI:
+```shell
+sudo nano /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
+```
+Then change each of the three "r36.4" entries to "r36.5"
+
+Or, from GUI:  
+Use "Software & Updates" and click the "Other Software" tab and change each of the three "r36.4" entries to distribution "r36.5":
+
+Once we have made that change, do an update and upgrade:
+```shell
+sudo apt update
+sudo apt upgrade
+```
+### Grab some basics
+```shell
+# Tools and such, lets get everything we might need
+sudo apt install -y git build-essential cmake pkg-config \
+                    libvulkan-dev glslang-tools spirv-tools vulkan-tools libssl-dev\
+                    libopenblas-dev python3-venv python3-pip curl \
+                    libcurl4-openssl-dev
+```
+### Build llama.cpp
+```shell
+cd ~
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+
+# Configure (Release build, use OpenBLAS)
+cmake -B build -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=87 \
+  -DGGML_CUDA_F16=ON -DGGML_CUDA_FORCE_MMQ=ON \
+  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
+# Compile (Jetson has 6 cores; -j6 is sensible)
+cmake --build build -j6
+```
