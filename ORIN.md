@@ -83,12 +83,12 @@ cd ~
 git clone https://github.com/ggml-org/llama.cpp
 cd llama.cpp
 
-# Configure (Release build, use CUDA)
+# Configure (Release build, use CUDA, should take forever to compile with these flags)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
-  -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=87 \
+  -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=87 -DGGML_CUDA_FA_ALL_QUANTS=ON \
   -DGGML_CUDA_F16=ON -DGGML_CUDA_FORCE_MMQ=ON \
   -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
   -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
 # Compile (Jetson has 6 cores; -j6 is sensible)
-cmake --build build -j6
+cmake --build build --config Release -j6
 ```
