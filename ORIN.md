@@ -21,15 +21,15 @@ As of 8/2025, the Orin Nano Super comes with firmware 36.4.3-gcid-38968081. It h
 Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36.4.4 and need a couple of reboots.
 
 ## Software
-* [Nvidia JetPack](https://developer.nvidia.com/embedded/jetpack-sdk-621) 6.2.1
-  * Jetson Linux 36.4.4, using Linux Kernel 5.15 and an Ubuntu 22.04-based root file system
+* [Nvidia JetPack](https://developer.nvidia.com/embedded/jetpack-sdk-622) 6.2.2
+  * Jetson Linux 36.5, using Linux Kernel 5.15 and an Ubuntu 22.04-based root file system
  
 ## Setup
 > **Under Development**
 > 
 > This is an incoherent collection of things, I intend to make it like a runbook
 > 
-* Downloaded JetPack 6.2.1 and extracted "sd-blob.img".
+* Downloaded JetPack 6.2.2 and extracted "sd-blob.img".
 * Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using Rufus. Selected "sd-blob.img" and clicked START.
 
 The boot will fail 5-6 seconds in. You need to edit /boot/extlinux/extlinux.conf as follows:
