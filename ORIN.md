@@ -83,7 +83,7 @@ cd ~
 git clone https://github.com/ggml-org/llama.cpp
 cd llama.cpp
 
-# Configure (Release build, use OpenBLAS)
+# Configure (Release build, use CUDA)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
   -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=87 \
   -DGGML_CUDA_F16=ON -DGGML_CUDA_FORCE_MMQ=ON \
