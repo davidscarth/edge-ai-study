@@ -67,8 +67,7 @@ Use "Software & Updates" and click the "Other Software" tab and change each of t
 
 Once we have made that change, do an update and upgrade:
 ```shell
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade
 ```
 ### Grab some basics
 ```shell
