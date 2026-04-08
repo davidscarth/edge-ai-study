@@ -63,10 +63,9 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 * Selected Raspberry Pi 5, Ubuntu Server 24.04.3 LTS (64-bit).
 * Used the imager options to set Admin user/password, enable SSH, set Wifi SSID/password.
 
-### Updated packages:
+### Update packages
 ```shell
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade
 ```
 ### Grab some basics
 ```shell
