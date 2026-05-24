@@ -92,6 +92,9 @@ cmake --build build -j4
 ```shell
 python3 -m venv ~/venvs/hf && source ~/venvs/hf/bin/activate
 pip install -U huggingface_hub
+deactivate
+echo 'alias hf="~/venvs/hf/bin/hf"' >> ~/.bashrc
+source ~/.bashrc
 hf version
 ```
 ### Download all the models (one-shot script for copy/paste)
