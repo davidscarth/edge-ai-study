@@ -1,6 +1,6 @@
 # AI on the Raspberry Pi 5
-Version 0.1-dev<br>
-8/14/2025
+Version 0.2<br>
+5/24/2025
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
@@ -13,16 +13,16 @@ On a Raspberry Pi 5, it is feasible to run Large Language Models (LLMs) with suf
 I believe the smallest ~1B parameter models are likely to be speedy but less helpful, and ~3-4B parameter models slower but more helpful (potentially optimal for this hardware class?), and with enough time and patience the larger (~7B parameter) models might complete tasks extremely slowly. We may be able to get speedups with tuning settings (CPU tuning? GPU offload?), and carefully selecting models (quant levels particularly). All of this will be explored further here.
 
 ## Hardware
-The following build with a budget of approximately $200
+The following build with a budget of approximately $200 (as of 8/2025 when purchases were made)
 * [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) (16GB) (MSRP $129, found on sale for $99)
 * [Raspberry Pi SSD Kit](https://www.raspberrypi.com/products/ssd-kit/) (Official, 512GB NVMe) ($59)
 * [Raspberry Pi 45W Power Supply](https://www.microcenter.com/product/692335/raspberry-pi-45w-usb-c-power-supply) ($15), [Active Cooler](https://www.raspberrypi.com/products/active-cooler/) ($10), and [Bumper](https://www.raspberrypi.com/products/bumper/) ($4)
 
 ## Software
-* [Ubuntu](https://ubuntu.com/download/raspberry-pi) 24.04.3 LTS (HWE) (64-bit)
-* [llama.cpp](https://github.com/ggml-org/llama.cpp) b6139
-* [Open WebUI](https://github.com/open-webui/open-webui) v0.6.22
-* [llama-swap](https://github.com/mostlygeek/llama-swap) v150
+* [Ubuntu](https://ubuntu.com/download/raspberry-pi) 26.04 LTS (64-bit)
+* [llama.cpp](https://github.com/ggml-org/llama.cpp) b9305
+* [Open WebUI](https://github.com/open-webui/open-webui) v0.9.5
+* [llama-swap](https://github.com/mostlygeek/llama-swap) v217
 
 ## Models
 A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (IQ3_XS). Added select Q4_0 QAT models to see if there are any meaningful differences between Q4_K_M and Q4_0 on ARM.
@@ -60,7 +60,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 > This is an incoherent collection of things, I intend to make it like a runbook
 > 
 * Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using the Raspberry Pi imager.
-* Selected Raspberry Pi 5, Ubuntu Server 24.04.3 LTS (64-bit).
+* Selected Raspberry Pi 5, Ubuntu Server 26.04 LTS (64-bit).
 * Used the imager options to set Admin user/password, enable SSH, set Wifi SSID/password.
 
 ### Update packages
