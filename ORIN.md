@@ -91,6 +91,11 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release \
 # Compile (Jetson has 6 cores; -j6 is sensible)
 cmake --build build --config Release -j6
 ```
+### Headless (free up some RAM, login via SSH)
+```shell
+sudo systemctl set-default multi-user.target && sudo reboot
+```
+
 ## Results (llama-bench)
 NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags)
 5/25/2026
