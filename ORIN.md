@@ -138,4 +138,4 @@ NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER /
 | [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | OOM | OOM | - |
 | [Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | OOM | OOM | - |
 
-*MoE = mixture of experts · think = thinking/reasoning · vision = image input*
+*MoE = mixture of experts · think = thinking/reasoning · vision = image input capable*
