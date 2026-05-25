@@ -97,7 +97,7 @@ sudo systemctl set-default multi-user.target && sudo reboot
 ```
 
 ## Results (llama-bench)
-NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags)
+NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags)<br>
 5/25/2026
 
 ### Tier 1 <= 2GB
