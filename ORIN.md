@@ -86,9 +86,48 @@ cd llama.cpp
 # Configure (Release build, use CUDA, should take forever to compile with these flags)
 cmake -B build -DCMAKE_BUILD_TYPE=Release \
   -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=87 -DGGML_CUDA_FA_ALL_QUANTS=ON \
-  -DGGML_CUDA_F16=ON -DGGML_CUDA_FORCE_MMQ=ON \
-  -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
+  -DGGML_CUDA_F16=ON -DGGML_NATIVE=ON -DGGML_LTO=ON -DGGML_CCACHE=OFF \
   -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
 # Compile (Jetson has 6 cores; -j6 is sensible)
 cmake --build build --config Release -j6
 ```
+## Results (llama-bench)
+NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags)
+
+### Tier 1 <= 2GB
+| Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
+|-------|-------|------|--------|-------------|-------------|---------------|
+| TinyLlama 1.1 | Q4_K_M | 636MB | 1.10B | 1,584 | 56.99 | 0.3s |
+| OLMo 2 1B | Q4_K_M | 889MB | 1.48B | 1,750 | 51.71 | 0.3s |
+| Llama 3.2 1B | Q4_K_M | 763MB | 1.24B | 1,747 | 50.24 | 0.3s |
+| Gemma 3 1B | Q4_K_M | 762MB | 1.00B | 2,050 | 44.95 | 0.3s |
+| Gemma 3 1B Heretic | Q4_K_M | 762MB | 1.00B | 2,069 | 44.92 | 0.2s |
+| SmolLM2 1.7B | Q4_K_M | 1005MB | 1.71B | 1,087 | 37.20 | 0.5s |
+| SmolLM3 3B | Q4_K_M | 1.78GB | 3.08B | 766 | 22.63 | 0.7s |
+| Llama 3.2 3B | Q4_K_M | 1.87GB | 3.21B | 762 | 21.23 | 0.7s |
+
+### Tier 2 <=4GB
+| Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
+|-------|-------|------|--------|-------------|-------------|---------------|
+| Gemma 4 E2B Heretic (MoE) | Q4_K_M | 3.18GB | 4.65B | 810 | 25.78 | 0.6s |
+| Gemma 4 E2B (MoE, think) | Q4_K_M | 3.21GB | 4.65B | 803 | 25.15 | 0.6s |
+| Ministral 3B (vision) | Q4_K_M | 1.99GB | 3.43B | 698 | 19.74 | 0.7s |
+| Phi-4 Mini | Q4_K_M | 2.31GB | 3.84B | 657 | 18.82 | 0.8s |
+| Phi-4 Mini Reasoning (think) | Q4_K_M | 2.31GB | 3.84B | 658 | 18.81 | 0.8s |
+| Llama 3.1 8B | UD-Q3_K_XL | 3.90GB | 8.03B | 330 | 9.58 | 1.6s |
+
+### Tier 3 <=8GB
+| Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
+|-------|-------|------|--------|-------------|-------------|---------------|
+| Gemma 4 E4B Heretic (MoE, think) | Q4_K_M | 4.95GB | 7.52B | 466 | 14.26 | 1.1s |
+| Gemma 4 E4B (MoE, think) | Q4_K_M | 5.02GB | 7.52B | 384 | 13.99 | 1.3s |
+| Gemma 4 E4B (MoE, think) | Q8_0 | 7.46GB | 7.52B | 455 | 12.11 | 1.1s |
+| Hermes 3 8B | Q4_K_M | 4.58GB | 8.03B | 346 | 11.49 | 1.5s |
+| Llama 3.1 8B | Q4_K_M | 4.58GB | 8.03B | 345 | 11.48 | 1.5s |
+| Llama 8B Heretic | Q4_K_M | 4.58GB | 8.03B | 347 | 11.48 | 1.5s |
+| Ministral 8B (vision) | Q4_K_M | 4.83GB | 8.49B | 325 | 10.55 | 1.6s |
+| Ministral 8B (vision) | UD-Q3_K_XL | 4.12GB | 8.49B | 312 | 8.80 | 1.6s |
+| Phi-4 RP (think) | UD-Q2_K_XL | 5.40GB | 14.66B | 142 | 5.51 | 3.6s |
+| Ministral 14B (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 194 | OOM | 2.6s |
+| Llama 3.1 8B | Q8_0 | 7.95GB | 8.03B | OOM | OOM | - |
+| Ministral 14B (vision) | Q4_K_M | 7.67GB | 13.51B | OOM | OOM | - |
