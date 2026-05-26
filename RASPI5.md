@@ -180,9 +180,9 @@ echo "All done. Stored under: ${BASE}"
 ```
 ### Test out a model
 ```shell
-./llama.cpp/build/bin/llama-cli -m ~/models/gemma-4-e2b/Q4_K_M/google_gemma-4-E2B-it-Q4_K_M.gguf -t 4 -ngl 0 -co -p "Hello!"
+./llama.cpp/build/bin/llama-cli -m ~/models/gemma-4-e2b/Q4_K_M/google_gemma-4-E2B-it-Q4_K_M.gguf -t 4 -ngl 0 -p "Hello!"
 
-VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_LOADER_DEBUG=all ./llama.cpp/build/bin/llama-cli -m ~/models/gemma-3-1b-it/Q4_K_M/google_gemma-3-1b-it-Q4_K_M.gguf -t 4 -ngl 1 -co -p "Hello!"
+VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_LOADER_DEBUG=all ./llama.cpp/build/bin/llama-cli -m ~/models/gemma-3-1b-it/Q4_K_M/google_gemma-3-1b-it-Q4_K_M.gguf -t 4 -ngl 1 -p "Hello!"
 ```
 ### Build llama-swap
 ```shell
