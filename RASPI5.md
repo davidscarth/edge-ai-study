@@ -368,6 +368,7 @@ Lets see how they did. In order to preserve sanity, we're gonna place the cutoff
 | **[Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) ||||||||||
 | **[Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** ||||||||||
 | **[Llama 8B Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF)** ||||||||||
+
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
 
 ## Experiments with VideoCore
