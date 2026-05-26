@@ -10,7 +10,7 @@ I will also use this exercise as a way to test setting up a self-contained LLM s
 ## Hypothesis
 On a Raspberry Pi 5, it is feasible to run Large Language Models (LLMs) with sufficient speed and utility for practical local usage, with performance varying based on model size, model selection, and tuning settings.
 
-I believe the smallest ~1B parameter models are likely to be speedy but less helpful, and ~3-4B parameter models slower but more helpful (potentially optimal for this hardware class?), and with enough time and patience the larger (~7B parameter) models might complete tasks extremely slowly. We may be able to get speedups with tuning settings (CPU tuning? GPU offload?), and carefully selecting models (quant levels particularly). All of this will be explored further here.
+I believe the smallest ~1B parameter models are likely to be speedy but less helpful, and ~3-5B parameter models slower but more helpful (potentially optimal for this hardware class?), and with enough time and patience the larger (~8-14B parameter) models might complete tasks extremely slowly. We may be able to get speedups with tuning settings (CPU tuning? GPU offload?), and carefully selecting models (quant levels particularly). All of this will be explored further here.
 
 ## Hardware
 The following build with a budget of approximately $200 (as of 8/2025 when purchases were made)
