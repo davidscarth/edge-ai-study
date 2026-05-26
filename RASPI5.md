@@ -297,8 +297,8 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 | [Ministral 14B](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 3.87 | 1.18 | 132s |  |
 | [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | 4.86 | 1.10 | 105s |  |
 ### Tier 4 <= 16GB (Raspi 5 16GB only)
-| Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
-|-------|-------|------|--------|-------------|-------------|---------------|
+| Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
+|-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [Phi-4 RP](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | 4.23 | 1.05 | 121s |  |
 | [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | UD-Q2_K_XL | 8.65GB | 24B | 1.65 | 0.82 | 310s |  |
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
