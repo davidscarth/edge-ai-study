@@ -99,7 +99,7 @@ sudo systemctl set-default multi-user.target && sudo reboot
 ```shell
 ~/llama.cpp/build/bin/llama-server \
   -m ~/models/gemma-4-e2b/Q4_K_M/google_gemma-4-E2B-it-Q4_K_M.gguf \
-  -t 6 -ngl 99 -fa 1 -c 4096 -np 1 \
+  -t 6 -ngl 99 -fa 1 -c 8192 -np 1 \
   --host 0.0.0.0 --port 8081 --jinja \
   --api-key YOUR_RANDOM_KEY # REPLACE "YOUR_RANDOM_KEY" WITH AN ACTUAL RANDOM STRING!!!
 ```
