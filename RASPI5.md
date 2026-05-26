@@ -20,7 +20,7 @@ The following build with a budget of approximately $200 (as of 8/2025 when purch
 
 ## Software
 * [Ubuntu](https://ubuntu.com/download/raspberry-pi) 26.04 LTS (64-bit)
-* [llama.cpp](https://github.com/ggml-org/llama.cpp) b9305
+* [llama.cpp](https://github.com/ggml-org/llama.cpp) b9307
 * [Open WebUI](https://github.com/open-webui/open-webui) v0.9.5
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v217
 
@@ -180,9 +180,9 @@ echo "All done. Stored under: ${BASE}"
 ```
 ### Test out a model
 ```shell
-./build/bin/llama-cli -m ~/models/gemma-3-1b-it-qat/Q4_0/google_gemma-3-1b-it-qat-Q4_0.gguf -t 4 -ngl 0 -co -p "Hello!"
+./llama.cpp/build/bin/llama-cli -m ~/models/gemma-4-e2b/Q4_K_M/google_gemma-4-E2B-it-Q4_K_M.gguf -t 4 -ngl 0 -co -p "Hello!"
 
-VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_LOADER_DEBUG=all ./build/bin/llama-cli -m ~/models/gemma-3-1b-it-qat/Q4_0/google_gemma-3-1b-it-qat-Q4_0.gguf -t 4 -ngl 1 -co -p "Hello!"
+VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_LOADER_DEBUG=all ./llama.cpp/build/bin/llama-cli -m ~/models/gemma-3-1b-it/Q4_K_M/google_gemma-3-1b-it-Q4_K_M.gguf -t 4 -ngl 1 -co -p "Hello!"
 ```
 ### Build llama-swap
 ```shell
@@ -208,27 +208,24 @@ echo "healthCheckTimeout: 300"   >> "$OUT"
 echo "startPort: 10001"          >> "$OUT"
 echo "models:"                   >> "$OUT"
 
-toPretty() { echo "$1" | sed -E 's/_/./g; s/-/ /g'; }
+for gguf in "$BASE"/*/*/*.gguf; do
+  [[ -f "$gguf" ]] || continue
+  # Extract alias and quant from path: models/{alias}/{quant}/file.gguf
+  rel="${gguf#$BASE/}"
+  alias=$(echo "$rel" | cut -d/ -f1)
+  quant=$(echo "$rel" | cut -d/ -f2)
+  key="${alias}-${quant}"
+  label=$(echo "$alias" | sed 's/_/ /g; s/-/ /g') # pretty name
 
-for d in "$BASE"/*; do
-  [[ -d "$d" ]] || continue
-  name=$(basename "$d")
-  for f in q4km.gguf q4_0.gguf iq3_xs.gguf; do
-    p="$d/$f"
-    [[ -e "$p" ]] || continue
-    key="$name-${f%%.*}"   # e.g., smollm2-1_7b-q4km
-    label=$(echo "${f%%.*}" | tr '_' '-' | tr a-z A-Z)  # Q4KM / Q4-0 / IQ3-XS
-    alias="$(toPretty "$name") (${label})"
-    cat >> "$OUT" <<YAML
+  cat >> "$OUT" <<YAML
   "$key":
     cmd: |
       $BIN --host 127.0.0.1 --port \${PORT} \
-           -m $p -t 4 -c 4096 -ngl 0 \
-           --alias "$alias"
+           -m $gguf -t 4 -c 4096 -ngl 0 \
+           --alias "$label ($quant)"
     ttl: 600
 YAML
-    echo "added: $key -> $p"
-  done
+  echo "added: $key -> $gguf"
 done
 
 echo "wrote $OUT"
