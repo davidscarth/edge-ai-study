@@ -301,6 +301,7 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [Phi-4 RP](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | 4.23 | 1.05 | 121s |  |
 | [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | UD-Q2_K_XL | 8.65GB | 24B | 1.65 | 0.82 | 310s |  |
+
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
 
 ## 2. Qualitative Results ("ChatGPT-style" Tasks)
