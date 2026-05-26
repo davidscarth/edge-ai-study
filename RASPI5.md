@@ -237,7 +237,7 @@ chmod +x ~/make-llama-swap-yaml.sh
 ```shell
 ~/llama.cpp/build/bin/llama-server \
   -m ~/models/gemma-4-e2b/Q4_K_M/google_gemma-4-E2B-it-Q4_K_M.gguf \
-  -t 4 -c 8192 -ngl 0 \
+  -t 4 -c 8192 -ngl 0 -np 1 \
   --host 0.0.0.0 --port 8081 --jinja \
   --api-key YOUR_RANDOM_KEY # Replace with a string of your choice, you'll need it later
 ```
