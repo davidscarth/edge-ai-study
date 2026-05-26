@@ -236,10 +236,10 @@ chmod +x ~/make-llama-swap-yaml.sh
 ### Run llama.cpp’s OpenAI-compatible server
 ```shell
 ~/llama.cpp/build/bin/llama-server \
-  -m ~/models/smollm2-1_7b/Q4_K_M/SmolLM2-1.7B-Instruct-Q4_K_M.gguf \
-  -t 4 -c 4096 -ngl 0 \
-  --host 0.0.0.0 --port 8081 \
-  --api-key <YOUR_RANDOM_KEY> # Replace with a string of your choice, you'll need it later
+  -m ~/models/gemma-4-e2b/Q4_K_M/google_gemma-4-E2B-it-Q4_K_M.gguf \
+  -t 4 -c 8192 -ngl 0 \
+  --host 0.0.0.0 --port 8081 --jinja \
+  --api-key YOUR_RANDOM_KEY # Replace with a string of your choice, you'll need it later
 ```
 ### Open WebUI in a venv (open a new Terminal window)
 > I should probably update this to a docker method, as that seems to be highly suggested and most supported install from the Open WebUI devs
