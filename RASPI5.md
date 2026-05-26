@@ -44,7 +44,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Ministral 3B Instruct](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF)** | Jan 2025 | Q4_K_M (1.99 GB) | 3.4B | 131,072 | Apache 2.0 |
 | **[Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)** | Dec 2024 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
 | **[Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)** (think) | Apr 2025 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
-| **[Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE) | May 2025 | Q4_K_M (3.18 GB) | 4.65B | 32,768 | Apache 2.0 |
+| **[Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE, think) | May 2025 | Q4_K_M (3.18 GB) | 4.65B | 32,768 | Apache 2.0 |
 | **[Gemma 4 E2B](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF)** (MoE, think) | May 2025 | Q4_K_M (3.21 GB) | 4.65B | 32,768 | Apache 2.0 |
 ### Tier 3 <= 8GB size class (~8-14B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
@@ -341,7 +341,7 @@ This is a suite of prompts designed to test the model's practical usefulness and
     * **Scoring:** Pass/Fail. Does the code run correctly?
 
 ## Results
-Lets see how they did.
+Lets see how they did. In order to preserve sanity, we're gonna place the cutoff at 2.0 tok/s and eliminate models that benchmarked slower than that.
 ✅❌❓
 ### Tier 1 <= 2GB (~1B parameters)
 | Model Name | Test 1 | Test 2 | Test 3 | Test 4 | Test 5 | Test 6 | Test 7 | Test 8 | Test 9 |
@@ -369,14 +369,6 @@ Lets see how they did.
 | **[Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) ||||||||||
 | **[Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** ||||||||||
 | **[Llama 8B Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF)** ||||||||||
-| **[Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF)** ||||||||||
-| **[Ministral 8B](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF)** (vision) ||||||||||
-| **[Phi-4 Reasoning Plus](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF)** (think) ||||||||||
-### Tier 4 <= 16GB (experimental)
-| Model Name | Test 1 | Test 2 | Test 3 | Test 4 | Test 5 | Test 6 | Test 7 | Test 8 | Test 9 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF)** (think) ||||||||||
-| **[Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF)** (think) ||||||||||
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
 
 ## Experiments with VideoCore
@@ -440,7 +432,3 @@ watch -n0.5 'vcgencmd measure_clock core; vcgencmd measure_temp; vcgencmd get_th
 Testing on the [Raspberry Pi AI HAT+ 2](https://pip-assets.raspberrypi.com/categories/1319-raspberry-pi-ai-hat-2/documents/RP-009655-MM-4-raspberry-pi-ai-hat-plus-2-product-brief.pdf?disposition=inline) ([Documentation](https://www.raspberrypi.com/documentation/computers/ai.html#LLMs))
 
 Possibly explore attaching an external graphics card? Maybe a cheapo one?
-
-Possibly repeat test on Intel N150/N200 miniPC? Also runs around $200usd.
-
-Possibly repeat again on used hardware found as cheap as possible around ~$200? Maybe something with a real video card, even?
