@@ -1,4 +1,4 @@
-# Nvidia Orin Nano Super
+# AI on the Nvidia Jetson Orin Nano Super
 Version 0.3-dev<br>
 5/25/2026
 
