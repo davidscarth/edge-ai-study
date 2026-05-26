@@ -103,7 +103,7 @@ sudo systemctl set-default multi-user.target && sudo reboot
   --host 0.0.0.0 --port 8081 --jinja \
   --api-key YOUR_RANDOM_KEY # REPLACE "YOUR_RANDOM_KEY" WITH AN ACTUAL RANDOM STRING!!!
 ```
-[Quick and easy random API key strings from random.org](https://www.random.org/strings/?num=1&len=32&digits=on&loweralpha=on&upperalpha=on&unique=on&format=plain)
+[Quick and easy random API key strings from random.org](https://www.random.org/strings/?num=1&len=24&digits=on&loweralpha=on&upperalpha=on&unique=on&format=plain)
 
 ## Results (llama-bench)
 NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags)<br>
