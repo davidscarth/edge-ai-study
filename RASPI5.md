@@ -25,7 +25,7 @@ The following build with a budget of approximately $200 (as of 8/2025 when purch
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v217
 
 ## Models
-A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (UD-Q2_K_XL/UD-Q3_K_XL). Here they are sorted by size. There is generally some room for KV-cache at each tier.
+A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (UD-Q2_K_XL/UD-Q3_K_XL). Here they are sorted by size. There is generally some room for KV-cache (8192) at each tier, if you set KV higher then cutoffs may differ.
 
 ### Tier 1 <=2GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
