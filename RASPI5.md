@@ -25,7 +25,7 @@ The following build with a budget of approximately $200 (as of 8/2025 when purch
 * [llama-swap](https://github.com/mostlygeek/llama-swap) v217
 
 ## Models
-A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (UD-Q2_K_XL/UD-Q3_K_XL).
+A selection of relatively recent small open-weight LLM models. Using the same standard quant size across most models (Q4_K_M) to keep things apples-to-apples, and smaller size for the bigger models (UD-Q2_K_XL/UD-Q3_K_XL). Here they are sorted by size. There is generally some room for KV-cache at each tier.
 
 ### Tier 1 <=2GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
@@ -58,13 +58,13 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | **[Gemma 4 E4B Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF)** (MoE, think) | May 2025 | Q4_K_M (4.95 GB) | 7.52B | 32,768 | Apache 2.0 |
 | **[Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) | May 2025 | Q4_K_M (5.02 GB) | 7.52B | 32,768 | Apache 2.0 |
 | **[Phi-4 Reasoning Plus](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF)** (think) | Apr 2025 | UD-Q2_K_XL (5.40 GB) | 14.7B | 131,072 | MIT |
+### Tier 4 <= 16GB (~14-24B parameters, Pi 5 16GB only)
+| Model Name | Date | Quant and Size | Parameters | Context Window | License |
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | **[Ministral 14B](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF)** (vision) | Jan 2025 | UD-Q3_K_XL (6.45 GB) | 13.5B | 131,072 | Apache 2.0 |
 | **[Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) | May 2025 | Q8_0 (7.46 GB) | 7.52B | 32,768 | Apache 2.0 |
 | **[Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF)** (vision) | Jan 2025 | Q4_K_M (7.67 GB) | 13.5B | 131,072 | Apache 2.0 |
 | **[Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** | Jul 2024 | Q8_0 (7.95 GB) | 8.0B | 131,072 | Llama 3.1 |
-### Tier 4 <= 16GB (~14-24B parameters, Pi 5 16GB only)
-| Model Name | Date | Quant and Size | Parameters | Context Window | License |
-| :--- | :--- | :--- | :--- | :--- | :--- |
 | **[Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF)** (think) | Apr 2025 | Q4_K_M (8.43 GB) | 14.7B | 131,072 | MIT |
 | **[Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF)** (think) | Jun 2025 | UD-Q2_K_XL (8.65 GB) | 24B | 131,072 | Apache 2.0 |
 
@@ -169,8 +169,8 @@ dl bartowski/Hermes-3-Llama-3.1-8B-GGUF                                       he
 dl unsloth/Phi-4-reasoning-plus-GGUF                                          phi-4-reasoning-plus-ud UD-Q2_K_XL
 
 # Tier 4 <= 16GB — EXPERIMENTAL (Pi 5 16GB only)
-dl bartowski/Meta-Llama-3.1-8B-Instruct-GGUF                                  llama-3_1-8b-q8         Q8_0
 dl bartowski/google_gemma-4-E4B-it-GGUF                                       gemma-4-e4b-q8          Q8_0
+dl bartowski/Meta-Llama-3.1-8B-Instruct-GGUF                                  llama-3_1-8b-q8         Q8_0
 dl bartowski/microsoft_Phi-4-reasoning-plus-GGUF                              phi-4-reasoning-plus    Q4_K_M
 dl bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF                     ministral-14b           Q4_K_M
 dl unsloth/Magistral-Small-2509-GGUF                                          magistral-small         UD-Q2_K_XL
@@ -292,14 +292,15 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 | [Llama 3.1 8B](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | UD-Q3_K_XL | 3.90GB | 8.03B | 6.28 | 1.89 | 81.5s |  |
 | [Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF) | Q4_K_M | 4.58GB | 8.03B | 8.08 | 1.79 | 63.4s |  |
 | [Ministral 8B](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Q4_K_M | 4.83GB | 8.49B | 8.11 | 1.72 | 63.1s |  |
-| [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 8.68 | 1.59 | 59.0s | Q8 not worth it |
 | [Phi-4 RP](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF) (think) | UD-Q2_K_XL | 5.40GB | 14.66B | 2.75 | 1.26 | 186s |  |
-| [Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | 5.15 | 1.19 | 99s |  |
-| [Ministral 14B](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 3.87 | 1.18 | 132s |  |
-| [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | 4.86 | 1.10 | 105s | Q8 not worth it |
+
 ### Tier 4 <= 16GB (Raspi 5 16GB only)
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
+| [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 8.68 | 1.59 | 59.0s | Q8 not worth it |
+| [Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | 5.15 | 1.19 | 99s |  |
+| [Ministral 14B](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 3.87 | 1.18 | 132s |  |
+| [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | 4.86 | 1.10 | 105s | Q8 not worth it |
 | [Phi-4 RP](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | 4.23 | 1.05 | 121s |  |
 | [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | UD-Q2_K_XL | 8.65GB | 24B | 1.65 | 0.82 | 310s |  |
 
