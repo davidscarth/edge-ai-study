@@ -111,17 +111,15 @@ NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER /
 | [SmolLM2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 1,087 | 37.20 | 0.5s |
 | [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF) | Q4_K_M | 1.78GB | 3.08B | 766 | 22.63 | 0.7s |
 | [Llama 3.2 3B](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Q4_K_M | 1.87GB | 3.21B | 762 | 21.23 | 0.7s |
-
 ### Tier 2 <=4GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE) | Q4_K_M | 3.18GB | 4.65B | 810 | 25.78 | 0.6s |
+| [Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | Q4_K_M | 3.18GB | 4.65B | 810 | 25.78 | 0.6s |
 | [Gemma 4 E2B](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF) (MoE, think) | Q4_K_M | 3.21GB | 4.65B | 803 | 25.15 | 0.6s |
 | [Ministral 3B](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) (vision) | Q4_K_M | 1.99GB | 3.43B | 698 | 19.74 | 0.7s |
 | [Phi-4 Mini](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF) | Q4_K_M | 2.31GB | 3.84B | 657 | 18.82 | 0.8s |
 | [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF) (think) | Q4_K_M | 2.31GB | 3.84B | 658 | 18.81 | 0.8s |
 | [Llama 3.1 8B](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | UD-Q3_K_XL | 3.90GB | 8.03B | 330 | 9.58 | 1.6s |
-
 ### Tier 3 <=8GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
