@@ -273,7 +273,7 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 ### Tier 2 <= 4GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE) | Q4_K_M | 3.18GB | 4.65B | 37.84 | 5.42 | 13.5s |
+| [Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | Q4_K_M | 3.18GB | 4.65B | 37.84 | 5.42 | 13.5s |
 | [Gemma 4 E2B](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF) (MoE, think) | Q4_K_M | 3.21GB | 4.65B | 36.84 | 5.39 | 13.9s |
 | [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF) | Q4_K_M | 1.78GB | 3.08B | 26.94 | 4.55 | 19.0s |
 | [Llama 3.2 3B](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Q4_K_M | 1.87GB | 3.21B | 26.70 | 4.42 | 19.2s |
@@ -357,7 +357,7 @@ Lets see how they did. In order to preserve sanity, we're gonna place the cutoff
 | **[Ministral 3B](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF)** (vision) ||||||||||
 | **[Phi-4 Mini](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)** ||||||||||
 | **[Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)** (think) ||||||||||
-| **[Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE) ||||||||||
+| **[Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE, think) ||||||||||
 | **[Gemma 4 E2B](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF)** (MoE, think) ||||||||||
 ### Tier 3 <= 8GB (~8-14B parameters)
 | Model Name | Test 1 | Test 2 | Test 3 | Test 4 | Test 5 | Test 6 | Test 7 | Test 8 | Test 9 |
