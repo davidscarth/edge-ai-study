@@ -111,7 +111,7 @@ NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER /
 ```shell
 llama-bench -m MODEL -p 512 -n 128 -ngl 99 -fa 1 -t 6 -r 3
 ```
-### Tier 1 <= 2GB
+### Tier 1 <=2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 668MB | 1.10B | 2,223 | 66.69 | 0.2s |  |
