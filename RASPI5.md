@@ -63,7 +63,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | [Ministral 3 14B IT](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | Jan 2025 | UD-Q3_K_XL (6.45 GB) | 13.5B | 131,072 | Apache 2.0 |
 | [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | May 2025 | Q8_0 (7.46 GB) | 7.52B | 32,768 | Apache 2.0 |
-| [Ministral 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Jan 2025 | Q4_K_M (7.67 GB) | 13.5B | 131,072 | Apache 2.0 |
+| [Ministral 3 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Jan 2025 | Q4_K_M (7.67 GB) | 13.5B | 131,072 | Apache 2.0 |
 | [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Jul 2024 | Q8_0 (7.95 GB) | 8.0B | 131,072 | Llama 3.1 |
 | [Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Apr 2025 | Q4_K_M (8.43 GB) | 14.7B | 131,072 | MIT |
 | [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | Jun 2025 | UD-Q2_K_XL (8.65 GB) | 24B | 131,072 | Apache 2.0 |
