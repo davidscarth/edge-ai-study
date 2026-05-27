@@ -262,9 +262,10 @@ Okay, now navigate to your browser http://192.168.x.x:8080 (wherever your raspi 
 
 ## 1. Quantitative Results (llama-bench)
 Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cpp b9307 / CPU-only, build flags above)  
-llama-bench -m MODEL -p 512 -n 128 -ngl 0 -t 4 -r 3  
 5/25/2026
-
+```shell
+llama-bench -m MODEL -p 512 -n 128 -ngl 0 -t 4 -r 3
+```
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
