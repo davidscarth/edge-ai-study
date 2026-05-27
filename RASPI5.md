@@ -1,6 +1,6 @@
 # AI on the Raspberry Pi 5
-Version 0.3<br>
-5/25/2026
+Version 0.3.1<br>
+5/27/2026
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
@@ -262,17 +262,17 @@ Okay, now navigate to your browser http://192.168.x.x:8080 (wherever your raspi 
 
 ## 1. Quantitative Results (llama-bench)
 Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cpp b9307 / CPU-only, build flags above)  
-5/25/2026
+5/27/2026
 ```shell
 llama-bench -m MODEL -p 512 -n 128 -ngl 0 -t 4 -r 3
 ```
 ### Tier 1 <=2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
-| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 668MB | 1.10B | 68.14 | 12.40 | 7.5s |  |
+| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 668MB | 1.10B | 61.81 | 11.07 | 8.3s |  |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 60.19 | 10.45 | 8.5s |  |
 | [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 72.93 | 10.81 | 7.0s |  |
-| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 806MB | 1.00B | 63.16 | 10.43 | 8.1s |  |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 806MB | 1.00B | 52.11 | 9.03 | 9.8s |  |
 | [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 68.50 | 9.84 | 7.5s |  |
 | [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 43.12 | 7.24 | 11.9s |  |
 ### Tier 2 <=4GB
