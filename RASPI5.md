@@ -143,8 +143,8 @@ dl() {
 # Tier 1 <= 2GB
 dl mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF                              tinyllama-v1_1          Q4_K_M
 dl bartowski/google_gemma-3-1b-it-GGUF                                        gemma-3-1b-it           Q4_K_M
-dl mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF  gemma-3-1b-heretic      Q4_K_M
 dl bartowski/Llama-3.2-1B-Instruct-GGUF                                       llama-3_2-1b            Q4_K_M
+dl mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF  gemma-3-1b-heretic      Q4_K_M
 dl mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF                               olmo-2-1b               Q4_K_M
 dl bartowski/SmolLM2-1.7B-Instruct-GGUF                                       smollm2-1_7b            Q4_K_M
 
@@ -267,8 +267,8 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 668MB | 1.10B | 68.14 | 12.40 | 7.5s |  |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 60.19 | 10.45 | 8.5s |  |
-| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 762MB | 1.00B | 63.16 | 10.43 | 8.1s |  |
 | [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 72.93 | 10.81 | 7.0s |  |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 806MB | 1.00B | 63.16 | 10.43 | 8.1s |  |
 | [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 68.50 | 9.84 | 7.5s |  |
 | [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 43.12 | 7.24 | 11.9s |  |
 ### Tier 2 <= 4GB
