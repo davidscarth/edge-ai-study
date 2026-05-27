@@ -266,9 +266,9 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [TinyLlama 1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Q4_K_M | 636MB | 1.10B | 68.14 | 12.40 | 7.5s |  |
-| [Llama 3.2 1B](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 72.93 | 10.81 | 7.0s |  |
 | [Gemma 3 1B](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 60.19 | 10.45 | 8.5s |  |
 | [Gemma 3 1B Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF) | Q4_K_M | 762MB | 1.00B | 63.16 | 10.43 | 8.1s |  |
+| [Llama 3.2 1B](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 72.93 | 10.81 | 7.0s |  |
 | [OLMo 2 1B](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 68.50 | 9.84 | 7.5s |  |
 | [SmolLM2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 43.12 | 7.24 | 11.9s |  |
 ### Tier 2 <= 4GB
