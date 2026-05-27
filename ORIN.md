@@ -1,6 +1,6 @@
 # AI on the Nvidia Jetson Orin Nano Super
 Version 0.3.1<br>
-5/25/2026
+5/27/2026
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
@@ -108,7 +108,9 @@ sudo systemctl set-default multi-user.target && sudo reboot
 ## Results (llama-bench)
 NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags / Flash Attn: ON)<br>
 5/27/2026
-
+```shell
+llama-bench -m MODEL -p 512 -n 128 -ngl 99 -fa 1 -t 6 -r 3
+```
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
