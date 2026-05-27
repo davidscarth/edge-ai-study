@@ -112,18 +112,18 @@ NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER /
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [TinyLlama 1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Q4_K_M | 636MB | 1.10B | 1,584 | 56.99 | 0.3s |
+| [TinyLlama 1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Q4_K_M | 636MB | 1.10B | 1,584 | 56.99 | 0.3s |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 2,050 | 44.95 | 0.3s |
-| [Gemma 3 1B Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF) | Q4_K_M | 762MB | 1.00B | 2,069 | 44.92 | 0.2s |
-| [Llama 3.2 1B Instruct](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 1,747 | 50.24 | 0.3s |
-| [OLMo 2 1B](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 1,750 | 51.71 | 0.3s |
-| [SmolLM2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 1,087 | 37.20 | 0.5s |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 762MB | 1.00B | 2,069 | 44.92 | 0.2s |
+| [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 1,747 | 50.24 | 0.3s |
+| [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 1,750 | 51.71 | 0.3s |
+| [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 1,087 | 37.20 | 0.5s |
 ### Tier 2 <=4GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
 | [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF) | Q4_K_M | 1.78GB | 3.08B | 766 | 22.63 | 0.7s |
-| [Llama 3.2 3B Instruct](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Q4_K_M | 1.87GB | 3.21B | 762 | 21.23 | 0.7s |
-| [Ministral 3B Instruct](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) (vision) | Q4_K_M | 1.99GB | 3.43B | 698 | 19.74 | 0.7s |
+| [Llama 3.2 3B IT](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Q4_K_M | 1.87GB | 3.21B | 762 | 21.23 | 0.7s |
+| [Ministral 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) (vision) | Q4_K_M | 1.99GB | 3.43B | 698 | 19.74 | 0.7s |
 | [Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF) | Q4_K_M | 2.31GB | 3.84B | 657 | 18.82 | 0.8s |
 | [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF) (think) | Q4_K_M | 2.31GB | 3.84B | 658 | 18.81 | 0.8s |
 | [Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | Q4_K_M | 3.18GB | 4.65B | 810 | 25.78 | 0.6s |
@@ -131,21 +131,21 @@ NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER /
 ### Tier 3 <=8GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [Llama 3.1 8B](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | UD-Q3_K_XL | 3.90GB | 8.03B | 330 | 9.58 | 1.6s |
-| [Ministral 8B](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 4.12GB | 8.49B | 312 | 8.80 | 1.6s |
+| [Llama 3.1 8B IT](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | UD-Q3_K_XL | 3.90GB | 8.03B | 330 | 9.58 | 1.6s |
+| [Ministral 3 8B IT](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 4.12GB | 8.49B | 312 | 8.80 | 1.6s |
 | [Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF) | Q4_K_M | 4.58GB | 8.03B | 346 | 11.49 | 1.5s |
-| [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q4_K_M | 4.58GB | 8.03B | 345 | 11.48 | 1.5s |
-| [Llama 3.1 8B Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Q4_K_M | 4.58GB | 8.03B | 347 | 11.48 | 1.5s |
-| [Ministral 8B](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Q4_K_M | 4.83GB | 8.49B | 325 | 10.55 | 1.6s |
-| [Gemma 4 E4B Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF) (MoE, think) | Q4_K_M | 4.95GB | 7.52B | 466 | 14.26 | 1.1s |
-| [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q4_K_M | 5.02GB | 7.52B | 384 | 13.99 | 1.3s |
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q4_K_M | 4.58GB | 8.03B | 345 | 11.48 | 1.5s |
+| [Llama 3.1 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Q4_K_M | 4.58GB | 8.03B | 347 | 11.48 | 1.5s |
+| [Ministral 3 8B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Q4_K_M | 4.83GB | 8.49B | 325 | 10.55 | 1.6s |
+| [Gemma 4 E4B IT Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF) (MoE, think) | Q4_K_M | 4.95GB | 7.52B | 466 | 14.26 | 1.1s |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q4_K_M | 5.02GB | 7.52B | 384 | 13.99 | 1.3s |
 | [Phi-4 Reasoning Plus](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF) (think) | UD-Q2_K_XL | 5.40GB | 14.66B | 142 | 5.51 | 3.6s |
 ### Tier 4 <=16GB (tested to see what works)
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [Ministral 14B](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 194 | OOM | - |
-| [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 455 | 12.11 | 1.1s |
-| [Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | OOM | OOM | - |
-| [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | OOM | OOM | - |
+| [Ministral 3 14B IT](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 194 | OOM | - |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 455 | 12.11 | 1.1s |
+| [Ministral 3 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | OOM | OOM | - |
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | OOM | OOM | - |
 
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input capable*
