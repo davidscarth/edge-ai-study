@@ -30,43 +30,43 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 ### Tier 1 <=2GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [TinyLlama v1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** | Jan 2024 | Q4_K_M (636 MB) | 1.1B | 2,048 | Apache 2.0 |
-| [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
-| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF)** | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
-| [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF)** | Sep 2024 | Q4_K_M (763 MB) | 1.2B | 131,072 | Llama 3.2 |
-| [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF)** | Apr 2025 | Q4_K_M (889 MB) | 1.5B | 4,096 | Apache 2.0 |
-| [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** | Nov 2024 | Q4_K_M (1005 MB) | 1.7B | 8,192 | Apache 2.0 |
+| [TinyLlama v1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Jan 2024 | Q4_K_M (636 MB) | 1.1B | 2,048 | Apache 2.0 |
+| [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
+| [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Sep 2024 | Q4_K_M (763 MB) | 1.2B | 131,072 | Llama 3.2 |
+| [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Apr 2025 | Q4_K_M (889 MB) | 1.5B | 4,096 | Apache 2.0 |
+| [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Nov 2024 | Q4_K_M (1005 MB) | 1.7B | 8,192 | Apache 2.0 |
 ### Tier 2 <= 4GB size class (~3-5B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF)** | May 2025 | Q4_K_M (1.78 GB) | 3.1B | 8,192 | Apache 2.0 |
-| [Llama 3.2 3B IT](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)** | Sep 2024 | Q4_K_M (1.87 GB) | 3.2B | 131,072 | Llama 3.2 |
-| [Ministral 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF)** | Jan 2025 | Q4_K_M (1.99 GB) | 3.4B | 131,072 | Apache 2.0 |
-| [Phi-4 Mini IT](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)** | Dec 2024 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
-| [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)** (think) | Apr 2025 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
-| [Gemma 4 E2B IT Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE, think) | May 2025 | Q4_K_M (3.18 GB) | 4.65B | 32,768 | Apache 2.0 |
-| [Gemma 4 E2B IT](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF)** (MoE, think) | May 2025 | Q4_K_M (3.21 GB) | 4.65B | 32,768 | Apache 2.0 |
+| [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF) | May 2025 | Q4_K_M (1.78 GB) | 3.1B | 8,192 | Apache 2.0 |
+| [Llama 3.2 3B IT](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Sep 2024 | Q4_K_M (1.87 GB) | 3.2B | 131,072 | Llama 3.2 |
+| [Ministral 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) | Jan 2025 | Q4_K_M (1.99 GB) | 3.4B | 131,072 | Apache 2.0 |
+| [Phi-4 Mini IT](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF) | Dec 2024 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
+| [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF) (think) | Apr 2025 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
+| [Gemma 4 E2B IT Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | May 2025 | Q4_K_M (3.18 GB) | 4.65B | 32,768 | Apache 2.0 |
+| [Gemma 4 E2B IT](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF) (MoE, think) | May 2025 | Q4_K_M (3.21 GB) | 4.65B | 32,768 | Apache 2.0 |
 ### Tier 3 <= 8GB size class (~8-14B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Llama 3.1 8B IT](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF)** | Jul 2024 | UD-Q3_K_XL (3.90 GB) | 8.0B | 131,072 | Llama 3.1 |
-| [Ministral 3 8B IT](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF)** (vision) | Jan 2025 | UD-Q3_K_XL (4.12 GB) | 8.5B | 131,072 | Apache 2.0 |
-| [Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF)** | Aug 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
-| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
-| [Llama 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF)** | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
-| [Ministral 3 8B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF)** (vision) | Jan 2025 | Q4_K_M (4.83 GB) | 8.5B | 131,072 | Apache 2.0 |
-| [Gemma 4 E4B IT Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF)** (MoE, think) | May 2025 | Q4_K_M (4.95 GB) | 7.52B | 32,768 | Apache 2.0 |
-| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) | May 2025 | Q4_K_M (5.02 GB) | 7.52B | 32,768 | Apache 2.0 |
-| [Phi-4 Reasoning Plus](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF)** (think) | Apr 2025 | UD-Q2_K_XL (5.40 GB) | 14.7B | 131,072 | MIT |
+| [Llama 3.1 8B IT](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | Jul 2024 | UD-Q3_K_XL (3.90 GB) | 8.0B | 131,072 | Llama 3.1 |
+| [Ministral 3 8B IT](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF) (vision) | Jan 2025 | UD-Q3_K_XL (4.12 GB) | 8.5B | 131,072 | Apache 2.0 |
+| [Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF) | Aug 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
+| [Llama 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
+| [Ministral 3 8B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Jan 2025 | Q4_K_M (4.83 GB) | 8.5B | 131,072 | Apache 2.0 |
+| [Gemma 4 E4B IT Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF) (MoE, think) | May 2025 | Q4_K_M (4.95 GB) | 7.52B | 32,768 | Apache 2.0 |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | May 2025 | Q4_K_M (5.02 GB) | 7.52B | 32,768 | Apache 2.0 |
+| [Phi-4 Reasoning Plus](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF) (think) | Apr 2025 | UD-Q2_K_XL (5.40 GB) | 14.7B | 131,072 | MIT |
 ### Tier 4 <= 16GB (~14-24B parameters, Pi 5 16GB only)
 | Model Name | Date | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [Ministral 3 14B IT](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF)** (vision) | Jan 2025 | UD-Q3_K_XL (6.45 GB) | 13.5B | 131,072 | Apache 2.0 |
-| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) | May 2025 | Q8_0 (7.46 GB) | 7.52B | 32,768 | Apache 2.0 |
-| [Ministral 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF)** (vision) | Jan 2025 | Q4_K_M (7.67 GB) | 13.5B | 131,072 | Apache 2.0 |
-| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** | Jul 2024 | Q8_0 (7.95 GB) | 8.0B | 131,072 | Llama 3.1 |
-| [Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF)** (think) | Apr 2025 | Q4_K_M (8.43 GB) | 14.7B | 131,072 | MIT |
-| [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF)** (think) | Jun 2025 | UD-Q2_K_XL (8.65 GB) | 24B | 131,072 | Apache 2.0 |
+| [Ministral 3 14B IT](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | Jan 2025 | UD-Q3_K_XL (6.45 GB) | 13.5B | 131,072 | Apache 2.0 |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | May 2025 | Q8_0 (7.46 GB) | 7.52B | 32,768 | Apache 2.0 |
+| [Ministral 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Jan 2025 | Q4_K_M (7.67 GB) | 13.5B | 131,072 | Apache 2.0 |
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Jul 2024 | Q8_0 (7.95 GB) | 8.0B | 131,072 | Llama 3.1 |
+| [Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Apr 2025 | Q4_K_M (8.43 GB) | 14.7B | 131,072 | MIT |
+| [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | Jun 2025 | UD-Q2_K_XL (8.65 GB) | 24B | 131,072 | Apache 2.0 |
 
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
 
