@@ -301,7 +301,7 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 | [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 8.68 | 1.59 | 59.0s | Q8 not worth it |
 | [Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | 5.15 | 1.19 | 99s |  |
 | [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | 4.86 | 1.10 | 105s | Q8 not worth it |
-| [Phi-4 RP](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | 4.23 | 1.05 | 121s |  |
+| [Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | 4.23 | 1.05 | 121s |  |
 | [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | UD-Q2_K_XL | 8.65GB | 24B | 1.65 | 0.82 | 310s |  |
 
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
