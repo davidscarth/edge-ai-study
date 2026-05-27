@@ -30,7 +30,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 ### Tier 1 <=2GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [TinyLlama v1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Jan 2024 | Q4_K_M (636 MB) | 1.1B | 2,048 | Apache 2.0 |
+| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Jan 2024 | Q4_K_M (636 MB) | 1.1B | 2,048 | Apache 2.0 |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
 | [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
 | [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Sep 2024 | Q4_K_M (763 MB) | 1.2B | 131,072 | Llama 3.2 |
@@ -53,7 +53,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | [Ministral 3 8B IT](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF) (vision) | Jan 2025 | UD-Q3_K_XL (4.12 GB) | 8.5B | 131,072 | Apache 2.0 |
 | [Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF) | Aug 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
 | [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
-| [Llama 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
+| [Llama 3.1 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Jul 2024 | Q4_K_M (4.58 GB) | 8.0B | 131,072 | Llama 3.1 |
 | [Ministral 3 8B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Jan 2025 | Q4_K_M (4.83 GB) | 8.5B | 131,072 | Apache 2.0 |
 | [Gemma 4 E4B IT Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF) (MoE, think) | May 2025 | Q4_K_M (4.95 GB) | 7.52B | 32,768 | Apache 2.0 |
 | [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | May 2025 | Q4_K_M (5.02 GB) | 7.52B | 32,768 | Apache 2.0 |
@@ -143,7 +143,7 @@ dl() {
 # Tier 1 <= 2GB
 dl mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF                              tinyllama-v1_1          Q4_K_M
 dl bartowski/google_gemma-3-1b-it-GGUF                                        gemma-3-1b-it           Q4_K_M
-dl mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF     gemma-3-1b-heretic      Q4_K_M
+dl mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF  gemma-3-1b-heretic      Q4_K_M
 dl bartowski/Llama-3.2-1B-Instruct-GGUF                                       llama-3_2-1b            Q4_K_M
 dl mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF                               olmo-2-1b               Q4_K_M
 dl bartowski/SmolLM2-1.7B-Instruct-GGUF                                       smollm2-1_7b            Q4_K_M
@@ -265,11 +265,11 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
-| [TinyLlama 1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Q4_K_M | 668MB | 1.10B | 68.14 | 12.40 | 7.5s |  |
+| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 668MB | 1.10B | 68.14 | 12.40 | 7.5s |  |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 60.19 | 10.45 | 8.5s |  |
-| [Gemma 3 1B Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF) | Q4_K_M | 762MB | 1.00B | 63.16 | 10.43 | 8.1s |  |
-| [Llama 3.2 1B Instruct](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 72.93 | 10.81 | 7.0s |  |
-| [OLMo 2 1B](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 68.50 | 9.84 | 7.5s |  |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF) | Q4_K_M | 762MB | 1.00B | 63.16 | 10.43 | 8.1s |  |
+| [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 72.93 | 10.81 | 7.0s |  |
+| [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 68.50 | 9.84 | 7.5s |  |
 | [SmolLM2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 43.12 | 7.24 | 11.9s |  |
 ### Tier 2 <= 4GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
@@ -284,23 +284,23 @@ Raspberry Pi 5 Model B Rev 1.1 (4 threads / 16GB RAM / 512GB NVMe SSD / llama.cp
 ### Tier 3 <= 8GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
-| [Llama 3.1 8B](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | UD-Q3_K_XL | 3.90GB | 8.03B | 6.28 | 1.89 | 81.5s |  |
-| [Ministral 8B](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 4.12GB | 8.49B | 5.81 | 1.91 | 88.1s |  |
+| [Llama 3.1 8B IT](https://huggingface.co/unsloth/Llama-3.1-8B-Instruct-GGUF) | UD-Q3_K_XL | 3.90GB | 8.03B | 6.28 | 1.89 | 81.5s |  |
+| [Ministral 8B IT](https://huggingface.co/unsloth/Ministral-3-8B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 4.12GB | 8.49B | 5.81 | 1.91 | 88.1s |  |
 | [Hermes 3 8B](https://huggingface.co/bartowski/Hermes-3-Llama-3.1-8B-GGUF) | Q4_K_M | 4.58GB | 8.03B | 8.08 | 1.79 | 63.4s |  |
-| [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q4_K_M | 4.58GB | 8.03B | 9.12 | 2.02 | 56.1s |  |
-| [Llama 3.1 8B Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Q4_K_M | 4.58GB | 8.03B | 9.15 | 2.10 | 56.0s |  |
-| [Ministral 8B](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Q4_K_M | 4.83GB | 8.49B | 8.11 | 1.72 | 63.1s |  |
-| [Gemma 4 E4B Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF) (MoE, think) | Q4_K_M | 4.95GB | 7.52B | 17.83 | 2.80 | 28.7s |  |
-| [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q4_K_M | 5.02GB | 7.52B | 17.89 | 2.67 | 28.6s |  |
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q4_K_M | 4.58GB | 8.03B | 9.12 | 2.02 | 56.1s |  |
+| [Llama 3.1 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF) | Q4_K_M | 4.58GB | 8.03B | 9.15 | 2.10 | 56.0s |  |
+| [Ministral 3 8B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF) (vision) | Q4_K_M | 4.83GB | 8.49B | 8.11 | 1.72 | 63.1s |  |
+| [Gemma 4 E4B IT Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF) (MoE, think) | Q4_K_M | 4.95GB | 7.52B | 17.83 | 2.80 | 28.7s |  |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q4_K_M | 5.02GB | 7.52B | 17.89 | 2.67 | 28.6s |  |
 | [Phi-4 RP](https://huggingface.co/unsloth/Phi-4-reasoning-plus-GGUF) (think) | UD-Q2_K_XL | 5.40GB | 14.66B | 2.75 | 1.26 | 186s |  |
 
 ### Tier 4 <= 16GB (Raspi 5 16GB only)
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
-| [Ministral 14B](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 3.87 | 1.18 | 132s |  |
-| [Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 8.68 | 1.59 | 59.0s | Q8 not worth it |
-| [Ministral 14B](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | 5.15 | 1.19 | 99s |  |
-| [Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | 4.86 | 1.10 | 105s | Q8 not worth it |
+| [Ministral 3 14B IT](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | 3.87 | 1.18 | 132s |  |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 8.68 | 1.59 | 59.0s | Q8 not worth it |
+| [Ministral 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | 5.15 | 1.19 | 99s |  |
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | 4.86 | 1.10 | 105s | Q8 not worth it |
 | [Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | 4.23 | 1.05 | 121s |  |
 | [Magistral Small](https://huggingface.co/unsloth/Magistral-Small-2509-GGUF) (think) | UD-Q2_K_XL | 8.65GB | 24B | 1.65 | 0.82 | 310s |  |
 
@@ -346,29 +346,29 @@ Lets see how they did. In order to preserve sanity, we're gonna place the cutoff
 ### Tier 1 <= 2GB (~1B parameters)
 | Model Name | Test 1 | Test 2 | Test 3 | Test 4 | Test 5 | Test 6 | Test 7 | Test 8 | Test 9 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[TinyLlama v1.1](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF)** ||||||||||
-| **[Llama 3.2 1B](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF)** ||||||||||
-| **[Gemma 3 1B](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF)** ||||||||||
-| **[Gemma 3 1B Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF)** ||||||||||
-| **[OLMo 2 1B](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF)** ||||||||||
-| **[SmolLM2 1.7B](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** ||||||||||
+| [TinyLlama v1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) ||||||||||
+| [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) ||||||||||
+| [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) ||||||||||
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-GGUF) ||||||||||
+| [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) ||||||||||
+| [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF)** ||||||||||
 ### Tier 2 <= 4GB (~3-5B parameters)
 | Model Name | Test 1 | Test 2 | Test 3 | Test 4 | Test 5 | Test 6 | Test 7 | Test 8 | Test 9 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF)** ||||||||||
-| **[Llama 3.2 3B](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)** ||||||||||
-| **[Ministral 3B](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF)** (vision) ||||||||||
-| **[Phi-4 Mini](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)** ||||||||||
-| **[Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)** (think) ||||||||||
-| **[Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE, think) ||||||||||
-| **[Gemma 4 E2B](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF)** (MoE, think) ||||||||||
+| [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF)** ||||||||||
+| [Llama 3.2 3B IT](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)** ||||||||||
+| [Ministral 3 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF)** (vision) ||||||||||
+| [Phi-4 Mini IT](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF)** ||||||||||
+| [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF)** (think) ||||||||||
+| [Gemma 4 E2B IT Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF)** (MoE, think) ||||||||||
+| [Gemma 4 E2B IT](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF)** (MoE, think) ||||||||||
 ### Tier 3 <= 8GB (~8-14B parameters)
 | Model Name | Test 1 | Test 2 | Test 3 | Test 4 | Test 5 | Test 6 | Test 7 | Test 8 | Test 9 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[Gemma 4 E4B Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF)** (MoE, think) ||||||||||
-| **[Gemma 4 E4B](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) ||||||||||
-| **[Llama 3.1 8B](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** ||||||||||
-| **[Llama 8B Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF)** ||||||||||
+| [Gemma 4 E4B IT Heretic](https://huggingface.co/llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF)** (MoE, think) ||||||||||
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF)** (MoE, think) ||||||||||
+| [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF)** ||||||||||
+| [Llama 8B IT Heretic](https://huggingface.co/bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF)** ||||||||||
 
 *MoE = mixture of experts · think = thinking/reasoning · vision = image input*
 
