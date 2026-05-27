@@ -30,10 +30,10 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 ### Tier 1 <=2GB size class (~1B parameters)
 | Model Name | Date of Release | Quant and Size | Parameters | Context Window | License |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Jan 2024 | Q4_K_M (636 MB) | 1.1B | 2,048 | Apache 2.0 |
+| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Jan 2024 | Q4_K_M (668 MB) | 1.1B | 2,048 | Apache 2.0 |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
-| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Mar 2025 | Q4_K_M (762 MB) | 1.0B | 32,768 | Gemma ToU |
 | [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Sep 2024 | Q4_K_M (763 MB) | 1.2B | 131,072 | Llama 3.2 |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Mar 2025 | Q4_K_M (806 MB) | 1.0B | 32,768 | Gemma ToU |
 | [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Apr 2025 | Q4_K_M (889 MB) | 1.5B | 4,096 | Apache 2.0 |
 | [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Nov 2024 | Q4_K_M (1005 MB) | 1.7B | 8,192 | Apache 2.0 |
 ### Tier 2 <= 4GB size class (~3-5B parameters)
