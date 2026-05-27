@@ -125,11 +125,11 @@ llama-bench -m MODEL -p 512 -n 128 -ngl 99 -fa 1 -t 6 -r 3
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF) | Q4_K_M | 1.78GB | 3.08B | 892 | 24.24 | 0.6s |  |
 | [Llama 3.2 3B IT](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Q4_K_M | 1.87GB | 3.21B | 893 | 22.88 | 0.6s |  |
-| [Ministral 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) (vision) | Q4_K_M | 1.99GB | 3.43B | 841 | 21.66 | 0.6s |  |
+| [Ministral 3 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) (vision) | Q4_K_M | 1.99GB | 3.43B | 841 | 21.66 | 0.6s |  |
 | [Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF) | Q4_K_M | 2.31GB | 3.84B | 778 | 20.29 | 0.7s |  |
 | [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF) (think) | Q4_K_M | 2.31GB | 3.84B | 775 | 20.29 | 0.7s |  |
-| [Gemma 4 E2B Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | Q4_K_M | 3.18GB | 4.65B | 815 | 27.65 | 0.6s |  |
-| [Gemma 4 E2B](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF) (MoE, think) | Q4_K_M | 3.21GB | 4.65B | 814 | 26.85 | 0.6s |  |
+| [Gemma 4 E2B IT Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | Q4_K_M | 3.18GB | 4.65B | 815 | 27.65 | 0.6s |  |
+| [Gemma 4 E2B IT](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF) (MoE, think) | Q4_K_M | 3.21GB | 4.65B | 814 | 26.85 | 0.6s |  |
 ### Tier 3 <=8GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) | Notes |
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
