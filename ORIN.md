@@ -114,10 +114,10 @@ llama-bench -m MODEL -p 512 -n 128 -ngl 99 -fa 1 -t 6 -r 3
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 636MB | 1.10B | 1,584 | 56.99 | 0.3s |
+| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama-1.1B-Chat-v1.0-i1-GGUF) | Q4_K_M | 668MB | 1.10B | 1,584 | 56.99 | 0.3s |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 2,050 | 44.95 | 0.3s |
-| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 762MB | 1.00B | 2,069 | 44.92 | 0.2s |
 | [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 1,747 | 50.24 | 0.3s |
+| [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 806MB | 1.00B | 2,069 | 44.92 | 0.2s |
 | [OLMo 2 1B IT](https://huggingface.co/mradermacher/OLMo-2-0425-1B-Instruct-i1-GGUF) | Q4_K_M | 889MB | 1.48B | 1,750 | 51.71 | 0.3s |
 | [SmolLM2 1.7B IT](https://huggingface.co/bartowski/SmolLM2-1.7B-Instruct-GGUF) | Q4_K_M | 1005MB | 1.71B | 1,087 | 37.20 | 0.5s |
 ### Tier 2 <=4GB
