@@ -42,7 +42,7 @@ A selection of relatively recent small open-weight LLM models. Using the same st
 | [SmolLM3 3B](https://huggingface.co/bartowski/HuggingFaceTB_SmolLM3-3B-GGUF) | May 2025 | Q4_K_M (1.78 GB) | 3.1B | 8,192 | Apache 2.0 |
 | [Llama 3.2 3B IT](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF) | Sep 2024 | Q4_K_M (1.87 GB) | 3.2B | 131,072 | Llama 3.2 |
 | [Ministral 3B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-3B-Instruct-2512-GGUF) | Jan 2025 | Q4_K_M (1.99 GB) | 3.4B | 131,072 | Apache 2.0 |
-| [Phi-4 Mini IT](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF) | Dec 2024 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
+| [Phi-4 Mini Instruct](https://huggingface.co/bartowski/microsoft_Phi-4-mini-instruct-GGUF) | Dec 2024 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
 | [Phi-4 Mini Reasoning](https://huggingface.co/bartowski/microsoft_Phi-4-mini-reasoning-GGUF) (think) | Apr 2025 | Q4_K_M (2.31 GB) | 3.8B | 131,072 | MIT |
 | [Gemma 4 E2B IT Heretic](https://huggingface.co/mradermacher/gemma-4-E2B-it-heretic-ara-GGUF) (MoE, think) | May 2025 | Q4_K_M (3.18 GB) | 4.65B | 32,768 | Apache 2.0 |
 | [Gemma 4 E2B IT](https://huggingface.co/bartowski/google_gemma-4-E2B-it-GGUF) (MoE, think) | May 2025 | Q4_K_M (3.21 GB) | 4.65B | 32,768 | Apache 2.0 |
