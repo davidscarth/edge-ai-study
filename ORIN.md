@@ -106,8 +106,8 @@ sudo systemctl set-default multi-user.target && sudo reboot
 [Quick and easy random API key strings from random.org](https://www.random.org/strings/?num=1&len=24&digits=on&loweralpha=on&upperalpha=on&format=plain)
 
 ## Results (llama-bench)
-NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags)<br>
-5/25/2026
+NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER / llama.cpp b9333 built using above flags / Flash Attn: ON)<br>
+5/27/2026
 
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
