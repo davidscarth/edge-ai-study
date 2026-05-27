@@ -112,7 +112,7 @@ NVIDIA Jetson Orin Nano Super 8GB (1024 CUDA cores / NV Power Mode: MAXN_SUPER /
 ### Tier 1 <= 2GB
 | Model | Quant | Size | Params | pp512 (t/s) | tg128 (t/s) | TTFT (512tok) |
 |-------|-------|------|--------|-------------|-------------|---------------|
-| [TinyLlama 1.1 Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Q4_K_M | 636MB | 1.10B | 1,584 | 56.99 | 0.3s |
+| [TinyLlama 1.1B Chat](https://huggingface.co/mradermacher/TinyLlama_v1.1-GGUF) | Q4_K_M | 636MB | 1.10B | 1,584 | 56.99 | 0.3s |
 | [Gemma 3 1B IT](https://huggingface.co/bartowski/google_gemma-3-1b-it-GGUF) | Q4_K_M | 762MB | 1.00B | 2,050 | 44.95 | 0.3s |
 | [Gemma 3 1B IT Heretic](https://huggingface.co/mradermacher/gemma-3-1b-it-heretic-extreme-uncensored-abliterated-i1-GGUF) | Q4_K_M | 762MB | 1.00B | 2,069 | 44.92 | 0.2s |
 | [Llama 3.2 1B IT](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF) | Q4_K_M | 763MB | 1.24B | 1,747 | 50.24 | 0.3s |
