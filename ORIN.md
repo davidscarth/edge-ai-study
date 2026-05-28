@@ -32,14 +32,15 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 * Downloaded JetPack 6.2.1 and extracted "sd-blob.img".
 * Patch the image to boot from nVME instead of SD:
 
-Patching on Windows:
+Patching on Windows (for JetPack 6.2.2, CRC-32: 9dd34ec8, MD5: 66ba05a7a033cd36fb509b71e75cfa40):
 ```shell
 $f=[System.IO.File]::OpenWrite("sd-blob.img");$f.Seek(18807914685,0)|Out-Null;$f.Write([Text.Encoding]::ASCII.GetBytes("nvme0n1p1"),0,9);$f.Close()
 ```
-Patching on Linux/Mac/WSL2:
+Patching on Linux/Mac/WSL2 (for JetPack 6.2.2, CRC-32: 9dd34ec8, MD5: 66ba05a7a033cd36fb509b71e75cfa40):
 ```shell
 echo -n 'nvme0n1p1' | dd of=sd-blob.img bs=1 seek=18807914685 conv=notrunc
 ```
+Otherwise, you'll need to edit /boot/extlinux/extlinux.conf to change "root=/dev/mmcblk0p" to "root=/dev/nvme0n1p1", which will involve an SD card and extra work.
 
 * Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using Rufus. Selected "sd-blob.img" and clicked START.
 
