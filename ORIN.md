@@ -30,21 +30,18 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 > This is an incoherent collection of things, I intend to make it like a runbook
 > 
 * Downloaded JetPack 6.2.1 and extracted "sd-blob.img".
+* Patch the image to boot from nVME instead of SD:
+
+Patching on Windows:
+```shell
+$f=[System.IO.File]::OpenWrite("sd-blob.img");$f.Seek(18807914685,0)|Out-Null;$f.Write([Text.Encoding]::ASCII.GetBytes("nvme0n1p1"),0,9);$f.Close()
+```
+Patching on Linux/Mac/WSL2:
+```shell
+echo -n 'nvme0n1p1' | dd of=sd-blob.img bs=1 seek=18807914685 conv=notrunc
+```
+
 * Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using Rufus. Selected "sd-blob.img" and clicked START.
-
-The boot will fail 5-6 seconds in. You need to edit /boot/extlinux/extlinux.conf as follows:
-
-Original (line 10):
-```shell
-      APPEND ${cbootargs} root=/dev/mmcblk0p1 rw rootwait rootfstype=ext4 mminit_loglevel=4 console=ttyTCU0,115200 firmware_class.path=/etc/firmware fbcon=map:0 video=efifb:off console=tty0 
-```
-
-Correct (new line 10, for an NVMe drive in the 2280 slot):
-```shell
-      APPEND ${cbootargs} root=/dev/nvme0n1p1 rw rootwait rootfstype=ext4 mminit_loglevel=4 console=ttyTCU0,115200 firmware_class.path=/etc/firmware fbcon=map:0 video=efifb:off console=tty0 
-```
-
-Once you fix the extlinux.conf file, it will boot and finish setup as normal, no need for any SD card.
 
 ### Snap update issue workaround (specific to the Jetson Nano)
 ```shell
