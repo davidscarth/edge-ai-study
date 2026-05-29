@@ -89,7 +89,7 @@ sudo apt update && sudo apt upgrade
 sudo apt install -y git build-essential cmake pkg-config \
                     libvulkan-dev glslang-tools spirv-tools vulkan-tools glslc\
                     libopenblas-dev python3-venv python3-pip curl \
-                    libcurl4-openssl-dev
+                    libcurl4-openssl-dev spirv-headers
 ```
 ### Build llama.cpp
 ```shell
