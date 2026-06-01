@@ -32,6 +32,8 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 * Downloaded JetPack 6.2.1 and extracted "sd-blob.img".
 * Patch the image to boot from nVME instead of SD:
 
+NOTE: PATCHES BELOW ARE A WIP, skip ahead to where you have to manually patch.
+
 Patching on Windows using PowerShell (for sd-blob.img, CRC-32: 9dd34ec8, MD5: 66ba05a7a033cd36fb509b71e75cfa40):
 ```shell
 $f=[System.IO.File]::OpenWrite("sd-blob.img");$f.Seek(18807914685,0)|Out-Null;$f.Write([Text.Encoding]::ASCII.GetBytes("nvme0n1p1"),0,9);$f.Close()
