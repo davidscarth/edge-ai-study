@@ -22,7 +22,8 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 
 ## Software
 * [Nvidia JetPack](https://developer.nvidia.com/embedded/jetpack/downloads) 7.2
- 
+* [llama.cpp](https://github.com/ggml-org/llama.cpp) b9518
+
 ## Setup
 > **Under Development**
 > 
