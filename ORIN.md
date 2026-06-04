@@ -28,7 +28,7 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 > 
 > This is an incoherent collection of things, I intend to make it like a runbook
 > 
-* You MUST install JetPack 6.2.2 first to get on firmware 36.x or later, or you will not be able to use the 25W or MAXN_SUPER power profiles. You MUST check the firmware version before proceeding to install 7.2. Use an SD card to install and update to 6.2.2 first, as much as a waste of time as it seems.
+* You MUST install [JetPack 6.2.2](https://developer.nvidia.com/embedded/jetpack-sdk-622) first to get on firmware 36.x or later, or you will not be able to use the 25W or MAXN_SUPER power profiles. You MUST check the firmware version before proceeding to install 7.2. Use an SD card to install and update to 6.2.2 first, as much as a waste of time as it seems.
 * Once on firmware 36.x or later (i.e. 36.5.0), pop out the microSD and proceed further.
 * Installed fresh, empty nVME drive into Orin Nano.
 * Downloaded JetPack 7.2 and used balenaEtcher (alternatively, can use Rufus 4.13 to image a USB flash drive, partition scheme "GPT" and after hitting "Start" select "DD mode").
