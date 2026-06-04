@@ -172,6 +172,7 @@ dl unsloth/Phi-4-reasoning-plus-GGUF                                          ph
 # Tier 4 <= 16GB — EXPERIMENTAL (Pi 5 16GB only)
 dl unsloth/Ministral-3-14B-Instruct-2512-GGUF                                 ministral-14b-ud        UD-Q3_K_XL
 dl bartowski/google_gemma-4-E4B-it-GGUF                                       gemma-4-e4b-q8          Q8_0
+dl bartowski/gemma-4-12B-it-GGUF                                              gemma-4-12b             Q4_K_M
 dl bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF                     ministral-14b           Q4_K_M
 dl bartowski/Meta-Llama-3.1-8B-Instruct-GGUF                                  llama-3_1-8b-q8         Q8_0
 dl bartowski/microsoft_Phi-4-reasoning-plus-GGUF                              phi-4-reasoning-plus    Q4_K_M
