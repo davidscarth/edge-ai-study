@@ -32,6 +32,7 @@ Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36
 * Once on firmware 36.x or later (i.e. 36.5.0), pop out the microSD and proceed further.
 * Installed fresh, empty nVME drive into Orin Nano.
 * Downloaded JetPack 7.2 and used balenaEtcher (alternatively, can use Rufus 4.13 to image a USB flash drive, partition scheme "GPT" and after hitting "Start" select "DD mode").
+* JetPack 7.2 will prompt you to update to 39.2.0, do so. There will be a couple of reboots. Then finish installing Ubuntu.
 
 ### Update packages
 ```shell
