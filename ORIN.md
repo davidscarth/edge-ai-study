@@ -1,6 +1,6 @@
 # AI on the Nvidia Jetson Orin Nano Super
-Version 0.4<br>
-6/3/2026
+Version 0.4.1<br>
+6/4/2026
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
