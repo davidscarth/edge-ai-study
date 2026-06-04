@@ -44,7 +44,7 @@ sudo apt update && sudo apt upgrade
 sudo apt install -y git build-essential cmake pkg-config \
                     libvulkan-dev glslang-tools spirv-tools vulkan-tools libssl-dev\
                     libopenblas-dev python3-venv python3-pip curl \
-                    libcurl4-openssl-dev
+                    libcurl4-openssl-dev nvidia-jetpack
 ```
 ### Build llama.cpp
 ```shell
