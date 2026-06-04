@@ -1,6 +1,6 @@
 # AI on the Nvidia Jetson Orin Nano Super
-Version 0.3.2<br>
-5/27/2026
+Version 0.4<br>
+6/3/2026
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
@@ -21,51 +21,17 @@ As of 8/2025, the Orin Nano Super comes with firmware 36.4.3-gcid-38968081. It h
 Upon first boot to desktop with JetPack 6.2.1, it will update you to firmware 36.4.4 and need a couple of reboots.
 
 ## Software
-* [Nvidia JetPack](https://developer.nvidia.com/embedded/jetpack-sdk-622) 6.2.2*
-  * SD Image is Jetson Linux 36.4.4, we will apt update to get to 36.5. nVidia is too lazy to make an updated image and doesn't provide one.
+* [Nvidia JetPack](https://developer.nvidia.com/embedded/jetpack/downloads) 7.2
  
 ## Setup
 > **Under Development**
 > 
 > This is an incoherent collection of things, I intend to make it like a runbook
 > 
-* Downloaded JetPack 6.2.1 and extracted "sd-blob.img".
-* Patch the image to boot from nVME instead of SD:
+* Installed fresh, empty nVME drive into Orin Nano
+* Downloaded JetPack 7.2 and used Rufus 4.13 to image a USB flash drive, partition scheme "GPT" and after hitting "Start" select "DD mode"
 
-NOTE: PATCHES BELOW ARE A WIP, skip ahead to where you have to manually patch.
-
-Patching on Windows using PowerShell (for sd-blob.img, CRC-32: 9dd34ec8, MD5: 66ba05a7a033cd36fb509b71e75cfa40):
-```shell
-$f=[System.IO.File]::OpenWrite("sd-blob.img");$f.Seek(18807914685,0)|Out-Null;$f.Write([Text.Encoding]::ASCII.GetBytes("nvme0n1p1"),0,9);$f.Close()
-```
-Patching on Linux/Mac/WSL2 (for sd-blob.img, CRC-32: 9dd34ec8, MD5: 66ba05a7a033cd36fb509b71e75cfa40):
-```shell
-echo -n 'nvme0n1p1' | dd of=sd-blob.img bs=1 seek=18807914685 conv=notrunc
-```
-Otherwise, you'll need to edit /boot/extlinux/extlinux.conf to change "root=/dev/mmcblk0p" to "root=/dev/nvme0n1p1", which will involve an SD card and extra work.
-
-* Imaged the nVME using an external USB-NVMe enclosure (Sabrent EC-SNVE) using Rufus. Selected "sd-blob.img" and clicked START.
-
-### Snap update issue workaround (specific to the Jetson Nano)
-```shell
-snap download snapd --revision=24724
-sudo snap ack snapd_24724.assert
-sudo snap install snapd_24724.snap
-sudo snap refresh --hold snapd
-```
 ### Update packages
-*APT upgrade to JetPack 6.2.2/Jetson Linux 36.5 [per nVidia docs](https://docs.nvidia.com/jetson/archives/r36.5/DeveloperGuide/SD/SoftwarePackagesAndTheUpdateMechanism.html#updating-to-a-new-minor-release)*
-
-From  CLI:
-```shell
-sudo nano /etc/apt/sources.list.d/nvidia-l4t-apt-source.list
-```
-Then change each of the three "r36.4" entries to "r36.5"
-
-Or, from GUI:  
-Use "Software & Updates" and click the "Other Software" tab and change each of the three "r36.4" entries to distribution "r36.5":
-
-Once we have made that change, do an update and upgrade:
 ```shell
 sudo apt update && sudo apt upgrade
 ```
