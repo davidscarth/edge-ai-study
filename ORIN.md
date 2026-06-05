@@ -117,7 +117,7 @@ llama-bench -m MODEL -p 512 -n 128 -ngl 99 -fa 1 -t 6 -r 3
 |-------|-------|------|--------|-------------|-------------|---------------|-------|
 | [Ministral 3 14B IT](https://huggingface.co/unsloth/Ministral-3-14B-Instruct-2512-GGUF) (vision) | UD-Q3_K_XL | 6.45GB | 13.51B | OOM | OOM | - | Failed to load |
 | [Gemma 4 12B IT](https://huggingface.co/bartowski/google_gemma-4-12B-it-GGUF) | Q4_K_M | 7.13GB | 12.23B | OOM | OOM | - | Failed to load |
-| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 327 | 12.66 | 1.6s | pp var high |
+| [Gemma 4 E4B IT](https://huggingface.co/bartowski/google_gemma-4-E4B-it-GGUF) (MoE, think) | Q8_0 | 7.46GB | 7.52B | 327 | 12.66 | 1.6s | pp variance high |
 | [Ministral 3 14B IT](https://huggingface.co/bartowski/mistralai_Ministral-3-14B-Instruct-2512-GGUF) (vision) | Q4_K_M | 7.67GB | 13.51B | OOM | OOM | - | Failed to load |
 | [Llama 3.1 8B IT](https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF) | Q8_0 | 7.95GB | 8.03B | OOM | OOM | - | Failed to load |
 | [Phi-4 Reasoning Plus](https://huggingface.co/bartowski/microsoft_Phi-4-reasoning-plus-GGUF) (think) | Q4_K_M | 8.43GB | 14.66B | OOM | OOM | - | Failed to load |
