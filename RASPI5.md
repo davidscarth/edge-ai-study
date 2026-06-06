@@ -1,6 +1,6 @@
 # AI on the Raspberry Pi 5
-Version 0.3.1<br>
-5/27/2026
+Version 0.3.2<br>
+6/6/2026
 
 ## Objective
 Perform a feasibility study for running chat-oriented LLMs on highly resource-constrained hardware.
@@ -157,6 +157,7 @@ dl bartowski/microsoft_Phi-4-mini-instruct-GGUF                               ph
 dl bartowski/microsoft_Phi-4-mini-reasoning-GGUF                              phi-4-mini-reasoning    Q4_K_M
 dl mradermacher/gemma-4-E2B-it-heretic-ara-GGUF                               gemma-4-e2b-heretic     Q4_K_M
 dl bartowski/google_gemma-4-E2B-it-GGUF                                       gemma-4-e2b             Q4_K_M
+dl coder3101/gemma-4-E2B-it-qat-q4_0-heretic-gguf                             gemma-4-e2b-qat-heretic Q4_0
 
 # Tier 3 <= 8GB
 dl unsloth/Llama-3.1-8B-Instruct-GGUF                                         llama-3_1-8b-ud         UD-Q3_K_XL
@@ -167,6 +168,7 @@ dl bartowski/p-e-w_Llama-3.1-8B-Instruct-heretic-GGUF                         ll
 dl bartowski/mistralai_Ministral-3-8B-Instruct-2512-GGUF                      ministral-8b            Q4_K_M
 dl llmfan46/gemma-4-E4B-it-ultra-uncensored-heretic-GGUF                      gemma-4-e4b-heretic     Q4_K_M
 dl bartowski/google_gemma-4-E4B-it-GGUF                                       gemma-4-e4b             Q4_K_M
+dl coder3101/gemma-4-E4B-it-qat-q4_0-heretic-gguf                             gemma-4-e4b-qat-heretic Q4_0
 dl unsloth/Phi-4-reasoning-plus-GGUF                                          phi-4-reasoning-plus-ud UD-Q2_K_XL
 
 # Tier 4 <= 16GB — EXPERIMENTAL (Pi 5 16GB only)
